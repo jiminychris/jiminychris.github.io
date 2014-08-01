@@ -1,34 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bricks Coming Soon!</title>
-  <style>
-  body{background:#4D4D4D;}
-  #container{text-align:center;}
-  #imgbox{display:inline-block;position:relative;left:0;top:0;}
-  #bricks{position:relative;top:0;left:0;}
-  #con1{position:absolute;top:160px;left:192px;}
-  #con2{position:absolute;top:160px;left:192px;}
-  </style>
-  <script>
-    setInterval(function() {
-      var con1 = document.getElementById('con1');
-      if (con1.style.display == 'none') {
-        con1.style.display = 'block';
-      }
-      else {
-        con1.style.display = 'none';
-      }
-    }, 500);
-  </script>
+  <meta charset=utf-8 />
+  <title>Tiny Crawl</title>
+  <!--<link rel="stylesheet" media="screen" href="styles/style.css" />-->
+  <script data-main="scripts/app" src="scripts/lib/require.js"></script>
 </head>
 <body>
-  <div id="container">
-    <div id="imgbox">
-      <img id="bricks" src="images/bricks_construction.png" />
-      <img id="con2" src="images/construction2.png" />
-      <img id="con1" src="images/construction.png" />
-    </div>
-  </div>
+  <div id="screen"></div>
 </body>
 </html>
