@@ -1,34 +1,147 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bricks Coming Soon!</title>
+  <title>Projects - jiminychris</title>
   <style>
-  body{background:#4D4D4D;}
-  #container{text-align:center;}
-  #imgbox{display:inline-block;position:relative;left:0;top:0;}
-  #bricks{position:relative;top:0;left:0;}
-  #con1{position:absolute;top:160px;left:192px;}
-  #con2{position:absolute;top:160px;left:192px;}
+    body{background:#D0FFD0;font-family:"Arial";}
+    h1{font-size:32pt;}
+    h2{font-size:24pt;}
+    div{font-size:8pt;text-align:center;}
+    table{text-align:center;}
   </style>
-  <script>
-    setInterval(function() {
-      var con1 = document.getElementById('con1');
-      if (con1.style.display == 'none') {
-        con1.style.display = 'block';
-      }
-      else {
-        con1.style.display = 'none';
-      }
-    }, 500);
-  </script>
 </head>
 <body>
-  <div id="container">
-    <div id="imgbox">
-      <img id="bricks" src="images/bricks_construction.png" />
-      <img id="con2" src="images/construction2.png" />
-      <img id="con1" src="images/construction.png" />
-    </div>
-  </div>
+  <h1>Christopher LaBauve's Projects</h1>
+  <h2><i>TROIDS</i> (2016)</h2>
+  <p>During some time off, I decided to see what I could do if I just focused on writing a game engine
+    from scratch. I'd heard that every game programmer should write an <i>Asteroids</i> clone at some
+    point, so I got to work on that.</p>
+  <p>And, by the way, when I say <i>from scratch</i>, I mean no code at all that wasn't written by me.
+    Since I started following <a href="https://handmadehero.org/">Handmade Hero</a>, I really fell in
+    love with the idea of knowing exactly what all the code in my project is doing, and having the
+    ability to just go and fix something that's broken. The only libraries in <i>TROIDS</i> are
+    the C Runtime Library and primitive Windows libraries (e.g. Win32, DirectInput, XInput).</p>
+  <p>I ended up writing a pretty decent software renderer, and a collision detection system that took
+    a good deal of trial and error and a good deal more pen-and-paper geometry sessions. A lot of
+    coding time went to writing and maintaining the debugging/profiling system. The effort was
+    definitely worth it for how easy it was later to visualize execution time and memory
+    allocation.</p>
+  <p>You can browse the code at <a href="https://github.com/jiminychris/troids">GitHub</a>.</p>
+  <p>You can download the game here, but be warned that it wasn't tested on many machines. My
+    dev machine has an NVIDIA GeForce GTX 780, but the only hard requirements that I'm aware of are
+    Windows (only tested on 8 so far) and at least 64MB RAM. The debug build requires an additional
+    2GB RAM. <i>TROIDS</i> tries to use OpenGL, but if that fails it should fall back to GDI blitting.</p>
+  <p>Run the game by simply unzipping the download and double-clicking "win32_troids.exe".</p>
+  <p><a href="/TROIDS.zip">Download <i>TROIDS</i></a></p>
+  <p><a href="/TROIDSdebug.zip">Download <i>TROIDS</i> debug build</a></p>
+  <p>As for controls, you can use a keyboard, a DualShock 4 controller, an Xbox One or 360 controller,
+    or a USB Nintendo 64 controller manufactured by Retrolink (it's the only generic gamepad I've got).
+    Xbox controllers vibrate in the release build. Here's a table describing the controls:</p>
+  <table>
+    <th></th>
+    <th>Fire/Confirm</th>
+    <th>Accelerate</th>
+    <th>Spin</th>
+    <th>Start</th>
+    <th>Back</th>
+    <tr bgcolor="#C0C0C0">
+      <td><b>Keyboard</b></td>
+      <td>Space</td>
+      <td>W</td>
+      <td>A / D</td>
+      <td>Enter</td>
+      <td>Esc</td>
+    </tr>
+    <tr bgcolor="#A0A0A0">
+      <td><b>DualShock 4</b></td>
+      <td>X</td>
+      <td>Up</td>
+      <td>Left / Right</td>
+      <td>Options</td>
+      <td>Share</td>
+    </tr>
+    <tr bgcolor="#C0C0C0">
+      <td><b>Xbox One</b></td>
+      <td>A</td>
+      <td>Up</td>
+      <td>Left / Right</td>
+      <td>Menu</td>
+      <td>View</td>
+    </tr>
+    <tr bgcolor="#A0A0A0">
+      <td><b>Xbox 360</b></td>
+      <td>A</td>
+      <td>Up</td>
+      <td>Left / Right</td>
+      <td>Start</td>
+      <td>Back</td>
+    </tr>
+    <tr bgcolor="#C0C0C0">
+      <td><b>N64 by Retrolink</b></td>
+      <td>A</td>
+      <td>Up</td>
+      <td>Left / Right</td>
+      <td>Start</td>
+      <td>N/A</td>
+    </tr>
+  </table>
+  <h3>Is there any room for further improvement?</h3>
+  <ul>
+    <li><b>Physically accurate deflections.</b> Things mostly kind of slide off each other.</li>
+    <li><b>Sound effects.</b> Near the beginning of the project, I had some ear-splitting,
+      nails-on-chalkboard sine waves playing but I never got around to making or finding any
+      <i>pew-pew</i> sounds.</li>
+    <li><b>High score table.</b> You can rack up points, but how can that score mean anything if you
+      can't show it off next to your unsavory three-letter moniker?</li>
+    <li><b>Better AI.</b> I threw AI scripting in there one Friday afternoon and figured it would
+      require a bit of calculus to make it smarter. But it's probably more fun if the enemy doesn't
+      have perfect aim.</li>
+    <li><b>Generic gamepad support.</b> I never figured out the best way to do this. The best I could
+      think of was a button mapping interface.</li>
+  </ul>
+
+  <hr />
+  
+  <h2><i>The Legend of Zelda</i> Python Remake (2013)</h2>
+  <p>Back in 2013, I had been reading alot about game architecture and the "best way"
+    to organize game code. I came across the
+    <a href="https://en.wikipedia.org/wiki/Entity_component_system">entity-component-system</a> (ECS)
+    concept and thought it was the cat's pajamas. I tried to make <i>The Legend of Zelda</i>
+    (<i>LoZ</i>) with the idea in mind that I was <i>going to use ECS at all costs.</i> This became
+    very frustrating because of my flawed understanding of ECS, but also because I decided ahead of
+    time what the entire architecture should be without writing a single line of code. I also
+    desperately wanted to shoehorn every aspect of the game through this ECS framework even if it
+    didn't make any sense to do so.</p>
+  <p>After burning out on that first attempt at writing <i>LoZ</i>, I vowed to just start writing the
+    code that would make the game work. I got pretty far, making much of the lower parts of the
+    overworld map and all the rooms in the first dungeon. I used XML files to describe each room,
+    including the monsters that could spawn there and the color palette to use on the tiles.</p>
+  <p>You can check out the code at <a href="https://github.com/jiminychris/zeldack">GitHub</a>.
+    I wrote the game in Python using Pygame. Instructions for running it are in the README.</p>
+
+  <hr />
+  
+  <h2><i>The Legend of Zelda</i> HTML Map Editor (2013)</h2>
+  <p>After working on the Python <i>LoZ</i> remake, I figured it would be nice to port it to HTML5
+    and finish it there. After all, it would be way easier to get people to look at it if they could
+    just browse to it instead of having to download a bunch of files.</p>
+  <p>Anyway, I didn't get any further than drawing a green box that collides with a map defined in
+    JSON (XML is <i>sooo</i> Web 1.0). What I did spend a lot of time on here was a fun little map
+    editor that can load and spit out JSON data.</p>
+  <p>You can check out the code at <a href="https://github.com/jiminychris/htmloz">GitHub</a>.
+    The editor itself is <a href="http://jiminychris.com/htmloz/mapedit">here</a>. If you really want
+    to look at the green box, you can find it <a href="http://jiminychris.com/htmloz/">here</a>.</p>
+
+  <hr />
+
+  <h2>ICPC Practice Problems (201X-2015)</h2>
+  <p>When I was in school, I participated in a few programming competitions. I kept a bunch of my
+    solutions to practice problems hanging around on my hard drive until I decided to back them up
+    in 2015.</p>
+  <p>Like all the rest, the code is over on <a href="https://github.com/jiminychris/icpc">
+      GitHub</a>.</p>
+
+  <hr />
+  <div>The End!</div>
 </body>
 </html>
