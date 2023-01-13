@@ -1,0 +1,597 @@
+<html>
+  <head>
+    <title>Spelling Bee Training</title>
+    <style>
+      #textbox {display: block;}
+      #progress {font-weight: bold;}
+      .incorrect {
+          font-weight: bold;
+          color: #8B0000;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Spelling Bee Training</h1>
+    <div id="attract">
+      Choose word list.
+      <div id="lists">
+        
+      </div>
+    </div>
+    <div id="play" hidden>
+      <input id="textbox" spellcheck="false">
+      <p id="definition"></p>
+      <input id="submit" type="button" hidden>
+      <input id="repeat" type="button" value="Repeat">
+      <input id="define" type="button" value="Define">
+      <input id="restart" type="button" value="Restart">
+      <input id="refine" type="button" value="Restart with incorrect words" hidden>
+      <p id="progress"></p>
+      <ul id="scoreboard">
+      </ul>
+    </div>
+    <script>
+      let word_lists = [
+        {
+          name: "Archdiocesan Spelling Bee Word List",
+          words:
+          [
+            "Archdiocesan",
+            "Deuteronomy",
+            "Ecclesiastes",
+            "Ephesians",
+            "Exodus",
+            "Ezekiel",
+            "Fahrenheit",
+            "Japanese",
+            "Lamentations",
+            "Leviticus",
+            "Malachi",
+            "Mediterranean",
+            "Mesozoic",
+            "Micah",
+            "Nehemiah",
+            "Pentecost",
+            "Philippians",
+            "Philistines",
+            "Sirach",
+            "Thessalonians",
+            "Zechariah",
+            "Zephaniah",
+            "abbreviation",
+            "abhorred",
+            "absolution",
+            "absorbency",
+            "absurdity",
+            "acceleration",
+            "accelerator",
+            "accessible",
+            "accessible",
+            "accolade",
+            "accomplice",
+            "accomplishment",
+            "accreditation",
+            "accrual",
+            "acknowledging",
+            "acquittal",
+            "acupuncture",
+            "adjacent",
+            "administrative",
+            "adolescence",
+            "aerodynamic",
+            "aeronautics",
+            "aggregate",
+            "aghast",
+            "algebraically",
+            "algorithm",
+            "alleviate",
+            "altercation",
+            "altocumulus",
+            "amicable",
+            "amnesia",
+            "amortization",
+            "anaphylaxis",
+            "ancillary",
+            "anesthesia",
+            "anniversary",
+            "annotation",
+            "anonymous",
+            "antagonism",
+            "antiphon",
+            "antiquity",
+            "apartheid",
+            "appendicitis",
+            "apropos",
+            "aristocrat",
+            "arraignment",
+            "assassinate",
+            "auspices",
+            "baccalaureate",
+            "backgammon",
+            "ballistic",
+            "baroque",
+            "beautifully",
+            "belligerent",
+            "beneficiary",
+            "bereavement",
+            "bicentennial",
+            "blasphemous",
+            "blasphemously",
+            "boisterous",
+            "bouillon",
+            "boutonniere",
+            "buccaneer",
+            "bureaucrat",
+            "calisthenics",
+            "camouflage",
+            "cantankerous",
+            "cappuccino",
+            "carbohydrate",
+            "carcinogen",
+            "catastrophe",
+            "catechumen",
+            "cauterize",
+            "champagne",
+            "chasuble",
+            "chauvinism",
+            "chronological",
+            "chrysanthemum",
+            "claustrophobia",
+            "coincidental",
+            "collateral",
+            "collegial",
+            "colossal",
+            "commensurate",
+            "commitment",
+            "compassion",
+            "condescending",
+            "connoisseur",
+            "conscientious",
+            "conservationist",
+            "consignment",
+            "consternation",
+            "consubstantial",
+            "crescendo",
+            "curriculum",
+            "cybernetics",
+            "debonair",
+            "deceive",
+            "decentralization",
+            "deciduous",
+            "deficiency",
+            "delicatessen",
+            "delirious",
+            "denominator",
+            "dexterity",
+            "dialogue",
+            "dialysis",
+            "differentiate",
+            "dilapidated",
+            "discombobulated",
+            "discourse",
+            "disposition",
+            "diversify",
+            "divinity",
+            "doctrine",
+            "documentary",
+            "documentation",
+            "dominance",
+            "dystrophy",
+            "eccentric",
+            "eclectic",
+            "ecumenism",
+            "efficiency",
+            "egocentric",
+            "eloquence",
+            "embezzlement",
+            "emeritus",
+            "empirical",
+            "enlightenment",
+            "entomologist",
+            "entourage",
+            "entrepreneur",
+            "enunciate",
+            "enzyme",
+            "equilateral",
+            "equilibrium",
+            "espionage",
+            "etiquette",
+            "eucalyptus",
+            "euphemism",
+            "euthanasia",
+            "evangelization",
+            "exhilarated",
+            "extemporaneous",
+            "extenuating",
+            "extraneous",
+            "extraordinary",
+            "extraterrestrial",
+            "extravagant",
+            "facetiously",
+            "facilitate",
+            "fatigue",
+            "favoritism",
+            "feasible",
+            "fictitious",
+            "fidelity",
+            "flagrant",
+            "flamboyant",
+            "fluorescent",
+            "fortissimo",
+            "fortitude",
+            "frankincense",
+            "frivolous",
+            "furlough",
+            "genealogy",
+            "geocentric",
+            "geographical",
+            "geriatrics",
+            "glandular",
+            "globalization",
+            "grievance",
+            "gubernatorial",
+            "gullible",
+            "hacienda",
+            "hallucination",
+            "handkerchief",
+            "harmonious",
+            "haughtily",
+            "hemorrhaging",
+            "heterogeneous",
+            "hieroglyphic",
+            "hieroglyphics",
+            "hippopotamus",
+            "humiliate",
+            "idealistically",
+            "idiosyncratic",
+            "illumination",
+            "immaculate",
+            "imperative",
+            "impetus",
+            "improvise",
+            "incandescence",
+            "incognito",
+            "inconsequential",
+            "incorrigible",
+            "indigenous",
+            "inflammatory",
+            "inheritance",
+            "inoculate",
+            "insecticide",
+            "insinuate",
+            "inspiration",
+            "insufficient",
+            "intellectualize",
+            "interference",
+            "interplanetary",
+            "interpretation",
+            "irrevocable",
+            "isolation",
+            "isopropyl",
+            "isotope",
+            "isthmus",
+            "itinerary",
+            "jaundiced",
+            "judgmental",
+            "jurisdiction",
+            "jurisprudence",
+            "kaleidoscope",
+            "knowledgeable",
+            "labyrinth",
+            "lackadaisical",
+            "lethargic",
+            "liberalism",
+            "liberation",
+            "lieutenant",
+            "logarithm",
+            "longitudinal",
+            "luminous",
+            "maintenance",
+            "maraschino",
+            "massacre",
+            "mathematician",
+            "matriarch",
+            "matrimony",
+            "mausoleum",
+            "mechanical",
+            "mediocrity",
+            "memorabilia",
+            "meringue",
+            "metacarpal",
+            "metaphysics",
+            "mezzanine",
+            "microbial",
+            "mischievous",
+            "misnomer",
+            "modesty",
+            "mozzarella",
+            "myrrh",
+            "mystical",
+            "mythology",
+            "nautilus",
+            "necessarily",
+            "nepotism",
+            "neurotic",
+            "nimbostratus",
+            "notoriety",
+            "nuisance",
+            "obedience",
+            "obstetrician",
+            "ophthalmologist",
+            "opinionated",
+            "ordination",
+            "osmosis",
+            "ostentatious",
+            "outrageous",
+            "overconfidence",
+            "oxymoron",
+            "pachyderm",
+            "paleontology",
+            "panoramic",
+            "paramedic",
+            "paranoia",
+            "parliament",
+            "pasteurize",
+            "pedestrian",
+            "penitentiary",
+            "pericardium",
+            "peritonitis",
+            "perpendicularly",
+            "perseverance",
+            "pharmaceutical",
+            "philanthropist",
+            "philharmonic",
+            "plagiarize",
+            "platypus",
+            "plausible",
+            "pneumatic",
+            "polychromatic",
+            "potpourri",
+            "precocious",
+            "preposterous",
+            "prerogative",
+            "procrastination",
+            "proem",
+            "prolific",
+            "prophetic",
+            "prospectus",
+            "prudence",
+            "puppeteer",
+            "pyrotechnics",
+            "quadrilateral",
+            "quandary",
+            "quarantine",
+            "quarrelsome",
+            "questionnaire",
+            "quiche",
+            "quintessence",
+            "quivering",
+            "rambunctious",
+            "recession",
+            "reciprocal",
+            "recognizance",
+            "reconciliation",
+            "referendum",
+            "reimbursable",
+            "rendezvous",
+            "repertoire",
+            "repudiate",
+            "reservoir",
+            "resolute",
+            "responsorial",
+            "restitution",
+            "resurrection",
+            "rheumatism",
+            "romanticism",
+            "salvation",
+            "sanctifying",
+            "sanguine",
+            "scenario",
+            "scrumptious",
+            "sensationalism",
+            "sergeant",
+            "simultaneous",
+            "staccato",
+            "stymied",
+            "subservient",
+            "superficial",
+            "susceptibility",
+            "symmetrical",
+            "synonymous",
+            "synoptic",
+            "synthetic",
+            "temperamental",
+            "temperance",
+            "temptation",
+            "tenacious",
+            "theological",
+            "thesaurus",
+            "throughout",
+            "timorous",
+            "totalitarian",
+            "translucent",
+            "transmissible",
+            "turpitude",
+            "turquoise",
+            "tyrannical",
+            "tyranny",
+            "ulcerate",
+            "ultimately",
+            "unceremoniously",
+            "unconscious",
+            "unforgettable",
+            "unilateral",
+            "university",
+            "vacillate",
+            "vehement",
+            "vendetta",
+            "vengeance",
+            "ventriloquist",
+            "vindicate",
+            "vindictive",
+            "visibility",
+            "vitality",
+            "vulcanize",
+            "wearisome",
+            "wharf",
+            "whimsical",
+            "whippoorwill",
+            "wretchedness",
+            "xenophobia",
+            "zephyr",
+          ]
+        }
+      ];
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+      (function() {
+        lists = document.getElementById("lists");
+        attract = document.getElementById("attract");
+        play = document.getElementById("play");
+        textbox = document.getElementById("textbox");
+        definition = document.getElementById("definition");
+        submit = document.getElementById("submit");
+        repeat = document.getElementById("repeat");
+        define = document.getElementById("define");
+        refine = document.getElementById("refine");
+        restart = document.getElementById("restart");
+        scoreboard = document.getElementById("scoreboard");
+        progress = document.getElementById("progress");
+
+        function updateScoreboard(value, clazz) {
+          var li = document.createElement("li");
+          if (clazz !== undefined) li.classList.add(clazz);
+          li.append(document.createTextNode(value));
+          scoreboard.prepend(li);
+        }
+      
+        function choose_list(l) {
+          word_list = l;
+          words = l.words;
+          attract.setAttribute("hidden", "");
+          play.removeAttribute("hidden");
+          initialize();
+        }
+
+        word_lists.forEach(word_list => {
+          let button = document.createElement("input");
+          button.setAttribute("type", "button");
+          button.setAttribute("value", word_list.name);
+          button.onclick = () => {
+            choose_list(word_list);
+          }
+          lists.appendChild(button);
+        });
+
+        textbox.onkeydown = function(event) {
+          if (event.keyCode == 13) submit.click();
+        };
+
+        var score, index, r, word, randomizer, incorrectWords, words, word_list;
+
+        function say() {
+          textbox.focus();
+          let msg = new SpeechSynthesisUtterance(word);
+          let response = window.speechSynthesis.speak(msg);
+      }
+
+        function defineWord() {
+          textbox.focus();
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`, true);
+          xhr.onload = e => {
+            if(xhr.readyState === 4) {
+              if(xhr.status === 200) {
+                definitions = [];
+                const parsed = JSON.parse(xhr.responseText);
+                var number = 1;
+                parsed[0]["meanings"].forEach(meaning => {
+                  meaning["definitions"].forEach(definition => {
+                    definitions.push(`${number}. ${definition["definition"]}`)
+                    number += 1;
+                  });
+                });
+                definition.innerText = definitions.join("\n");
+              } else if(xhr.status === 404) {
+                definition.innerText = "No definition found.";
+              } else {
+                definition.innerText = xhr.statusText;
+              }
+            }
+          };
+          xhr.onerror = e => {
+            definition.innerText = xhr.statusText;
+          };
+          xhr.send(null);
+        }
+
+        function advance() {
+          guess = textbox.value
+          if (guess !== "") {
+            textbox.value = "";
+            if (guess.toLowerCase() === word.toLowerCase()) {
+              ++score;
+            } else {
+              incorrectWords.push(word);
+              updateScoreboard(`Incorrect! ${word} (You said "${guess}")`, "incorrect");
+            }
+            index++;
+            if (index < words.length) {
+              populate();
+            } else {
+              updateScoreboard(`Game over. You got ${score} correct.`);
+              if (score !== words.length) refine.removeAttribute("hidden");
+              submit.onclick = null;
+              repeat.setAttribute("hidden", "");
+              define.setAttribute("hidden", "");
+          }
+          } else {
+            say();
+          }
+        }
+
+        function populate() {
+          r = randomizer[index];
+          word = words[r];
+          definition.innerText = "";
+          progress.innerText = `Progress: ${index + 1} / ${words.length}`;
+          say();
+        }
+
+        function initialize() {
+          scoreboard.innerHTML = "";
+          index = score = 0;
+          incorrectWords = [];
+          randomizer = Array.from(Array(words.length).keys());
+          shuffleArray(randomizer);
+          submit.onclick = advance;
+          repeat.removeAttribute("hidden");
+          define.removeAttribute("hidden");
+          populate();
+          textbox.focus();
+        }
+
+        function reset() {
+          words = word_list.words;
+          initialize();
+        }
+
+        function refinedReset() {
+          words = incorrectWords;
+          refine.setAttribute("hidden", "");
+          initialize();
+        }
+                        
+        restart.onclick = reset;
+        refine.onclick = refinedReset;
+        repeat.onclick = say;
+        define.onclick = defineWord;
+      })();
+    </script>
+  </body>
+</html>
