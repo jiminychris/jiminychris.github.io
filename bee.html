@@ -23,8 +23,7 @@
     </div>
     <div id="play" hidden>
       <input id="textbox" autocorrect="off" spellcheck="false">
-      <p id="definition"></p>
-      <audio id="audio" controls></audio>
+      <audio id="audio"></audio>
       <div>
         <input id="submit" type="button" hidden>
         <input id="repeat" type="button" value="Repeat">
@@ -480,7 +479,6 @@
         play = document.getElementById("play");
         buttonUpload = document.getElementById("upload");
         textbox = document.getElementById("textbox");
-        definition = document.getElementById("definition");
         submit = document.getElementById("submit");
         repeat = document.getElementById("repeat");
         define = document.getElementById("define");
@@ -528,38 +526,55 @@
 
         var score, index, r, word, randomizer, incorrectWords, words, word_list;
 
-        function say() {
+        function say(phrase) {
+          window.speechSynthesis.cancel();
+          audio.pause();
+          audio.currentTime = 0;
           textbox.focus();
-          audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${word}`;
-          audio.play();
+          if (phrase.length > 200) {
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance(phrase));
+          } else {
+            audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${encodeURIComponent(phrase)}`;
+            audio.play();
+          }
+        }
+
+        function sayWord() {
+          say(word);
         }
 
         function defineWord() {
+          let definitionText;
           textbox.focus();
           const xhr = new XMLHttpRequest();
           xhr.open('GET', `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`, true);
           xhr.onload = e => {
             if(xhr.readyState === 4) {
               if(xhr.status === 200) {
-                definitions = [];
+                var definitions = [];
                 const parsed = JSON.parse(xhr.responseText);
-                var number = 1;
                 parsed[0]["meanings"].forEach(meaning => {
                   meaning["definitions"].forEach(definition => {
-                    definitions.push(`${number}. ${definition["definition"]}`)
-                    number += 1;
+                    definitions.push(definition["definition"])
                   });
                 });
-                definition.innerText = definitions.join("\n");
+                if (definitions.length > 1) {
+                  definitions.length = Math.min(definitions.length, 2);
+                  definitions = definitions.map((d, i) => `${i+1}. ${d}`);
+                }
+                definitionText = definitions.join(" ");
               } else if(xhr.status === 404) {
-                definition.innerText = "No definition found.";
+                definitionText = "No definition found.";
               } else {
-                definition.innerText = xhr.statusText;
+                definitionText = "Error loading definition.";
+                console.error(xhr.statusText);
               }
             }
+            say(definitionText);
           };
           xhr.onerror = e => {
-            definition.innerText = xhr.statusText;
+            say("Error loading definition.");
+            console.error(xhr.statusText);
           };
           xhr.send(null);
         }
@@ -585,16 +600,15 @@
               define.setAttribute("hidden", "");
           }
           } else {
-            say();
+            say(word);
           }
         }
 
         function populate() {
           r = randomizer[index];
           word = words[r];
-          definition.innerText = "";
           progress.innerText = `Progress: ${index + 1} / ${words.length}`;
-          say();
+          say(word);
         }
 
         function initialize() {
@@ -627,7 +641,7 @@
                         
         restart.onclick = reset;
         refine.onclick = refinedReset;
-        repeat.onclick = say;
+        repeat.onclick = sayWord;
         define.onclick = defineWord;
         buttonUpload.onclick = upload;
         dialog.addEventListener("close", () => {
