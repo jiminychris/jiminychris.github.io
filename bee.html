@@ -532,12 +532,8 @@
           audio.pause();
           audio.currentTime = 0;
           textbox.focus();
-          if (phrase.length > 200) {
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance(phrase));
-          } else {
-            audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${encodeURIComponent(phrase)}`;
-            audio.play();
-          }
+          audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${encodeURIComponent(phrase)}`;
+          audio.play().catch(() => window.speechSynthesis.speak(new SpeechSynthesisUtterance(phrase)));
         }
 
         function sayWord() {
