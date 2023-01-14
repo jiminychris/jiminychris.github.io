@@ -8,6 +8,9 @@
           font-weight: bold;
           color: #8B0000;
       }
+      .formfield * {
+          vertical-align: top;
+      }
     </style>
   </head>
   <body>
@@ -15,8 +18,8 @@
     <div id="attract">
       Choose word list.
       <div id="lists">
-        
       </div>
+      <input id="upload" type="button" value="New word list…">
     </div>
     <div id="play" hidden>
       <input id="textbox" autocorrect="off" spellcheck="false">
@@ -30,6 +33,24 @@
       <ul id="scoreboard">
       </ul>
     </div>
+    <dialog id="dialog">
+      <form method="dialog">
+        <p class="formfield">
+          <label>Name
+            <input id="dialog_name">
+          </label>
+        </p>
+        <p class="formfield">
+          <label>Words
+            <textarea id="dialog_words" rows="32" cols="52" placeholder="enter&#10;each&#10;word&#10;on&#10;its&#10;own&#10;line"></textarea>
+          </label>
+        </p>
+        <div>
+          <button value="cancel">Cancel</button>
+          <button id="save" value="default">Save</button>
+        </div>
+      </form>
+    </dialog>
     <script>
       let word_lists = [
         {
@@ -449,9 +470,11 @@
         }
       }
       (function() {
+        dialog = document.getElementById("dialog");
         lists = document.getElementById("lists");
         attract = document.getElementById("attract");
         play = document.getElementById("play");
+        buttonUpload = document.getElementById("upload");
         textbox = document.getElementById("textbox");
         definition = document.getElementById("definition");
         submit = document.getElementById("submit");
@@ -461,6 +484,10 @@
         restart = document.getElementById("restart");
         scoreboard = document.getElementById("scoreboard");
         progress = document.getElementById("progress");
+        dialog_name = document.getElementById("dialog_name");
+        dialog_words = document.getElementById("dialog_words");
+
+        localWordLists = JSON.parse(localStorage.getItem("lists") ?? "[]");
 
         function updateScoreboard(value, clazz) {
           var li = document.createElement("li");
@@ -477,15 +504,19 @@
           initialize();
         }
 
-        word_lists.forEach(word_list => {
-          let button = document.createElement("input");
-          button.setAttribute("type", "button");
-          button.setAttribute("value", word_list.name);
-          button.onclick = () => {
-            choose_list(word_list);
-          }
-          lists.appendChild(button);
-        });
+        function refreshWordLists() {
+          lists.innerHTML = "";
+          word_lists.concat(localWordLists).forEach(word_list => {
+            let button = document.createElement("input");
+            button.setAttribute("type", "button");
+            button.setAttribute("value", word_list.name);
+            button.onclick = () => {
+              choose_list(word_list);
+            }
+            lists.appendChild(button);
+          });
+        }
+        refreshWordLists();
 
         textbox.onkeydown = function(event) {
           if (event.keyCode == 13) submit.click();
@@ -585,11 +616,28 @@
           refine.setAttribute("hidden", "");
           initialize();
         }
+
+        function upload() {
+          dialog.showModal();
+        }
                         
         restart.onclick = reset;
         refine.onclick = refinedReset;
         repeat.onclick = say;
         define.onclick = defineWord;
+        buttonUpload.onclick = upload;
+        dialog.addEventListener("close", () => {
+          if (dialog.returnValue !== "cancel") {
+            localWordLists.push({
+              name: dialog_name.value,
+              words: dialog_words.value.split("\n"),
+            });
+            localStorage.setItem("lists", JSON.stringify(localWordLists));
+            refreshWordLists();
+          }
+          dialog_words.value = "";
+          dialog_name.value = "";
+        });
       })();
     </script>
   </body>
