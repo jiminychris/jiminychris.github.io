@@ -24,11 +24,14 @@
     <div id="play" hidden>
       <input id="textbox" autocorrect="off" spellcheck="false">
       <p id="definition"></p>
-      <input id="submit" type="button" hidden>
-      <input id="repeat" type="button" value="Repeat">
-      <input id="define" type="button" value="Define">
-      <input id="restart" type="button" value="Restart">
-      <input id="refine" type="button" value="Restart with incorrect words" hidden>
+      <audio id="audio" controls></audio>
+      <div>
+        <input id="submit" type="button" hidden>
+        <input id="repeat" type="button" value="Repeat">
+        <input id="define" type="button" value="Define">
+        <input id="restart" type="button" value="Restart">
+        <input id="refine" type="button" value="Restart with incorrect words" hidden>
+      </div>
       <p id="progress"></p>
       <ul id="scoreboard">
       </ul>
@@ -470,6 +473,7 @@
         }
       }
       (function() {
+        audio = document.getElementById("audio");
         dialog = document.getElementById("dialog");
         lists = document.getElementById("lists");
         attract = document.getElementById("attract");
@@ -526,9 +530,9 @@
 
         function say() {
           textbox.focus();
-          let msg = new SpeechSynthesisUtterance(word);
-          let response = window.speechSynthesis.speak(msg);
-      }
+          audio.src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${word}`;
+          audio.play();
+        }
 
         function defineWord() {
           textbox.focus();
