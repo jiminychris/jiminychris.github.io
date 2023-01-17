@@ -31,6 +31,7 @@
         <input id="define" type="button" value="Define">
         <input id="restart" type="button" value="Restart">
         <input id="refine" type="button" value="Restart with incorrect words" hidden>
+        <input id="quit" type="button" value="Quit">
       </div>
       <p id="progress"></p>
       <ul id="scoreboard">
@@ -55,7 +56,7 @@
       </form>
     </dialog>
     <script>
-      let word_lists = [
+      let wordLists = [
         {
           name: "Archdiocesan Spelling Bee Word List",
           words:
@@ -485,6 +486,7 @@
         define = document.getElementById("define");
         refine = document.getElementById("refine");
         restart = document.getElementById("restart");
+        buttonQuit = document.getElementById("quit");
         scoreboard = document.getElementById("scoreboard");
         progress = document.getElementById("progress");
         dialog_name = document.getElementById("dialog_name");
@@ -499,25 +501,82 @@
           scoreboard.prepend(li);
         }
       
-        function choose_list(l) {
-          word_list = l;
+        function chooseList(l) {
+          wordList = l;
           words = l.words;
-          attract.setAttribute("hidden", "");
-          play.removeAttribute("hidden");
+          attract.hidden = true;
+          play.hidden = false;
           initialize();
+        }
+
+        function deleteList(index) {
+          const wordList = localWordLists[index];
+          if(confirm(`Are you sure you want to delete the list "${wordList.name}"?`)) {
+            localWordLists.splice(index, 1);
+            localStorage.setItem("lists", JSON.stringify(localWordLists));
+            refreshWordLists();
+          }
+        }
+
+        function parseWords(x) {
+          return x.split("\n").filter(w => w.trim().length > 0);
+        }
+
+        function editList(index) {
+          const wordList = localWordLists[index];
+
+          function handleDialogEditClose() {
+            if (dialog.returnValue !== "cancel") {
+              wordList.name = dialog_name.value;
+              wordList.words = parseWords(dialog_words.value);
+              localStorage.setItem("lists", JSON.stringify(localWordLists));
+              refreshWordLists();
+            }
+            dialog_name.value = "";
+            dialog_words.value = "";
+            dialog.removeEventListener("close", handleDialogEditClose);
+          }
+
+          dialog_name.value = wordList.name;
+          dialog_words.value = wordList.words.join("\n");
+          dialog.addEventListener("close", handleDialogEditClose);
+          dialog.showModal();
+        }
+
+        function quit() {
+          play.hidden = true;
+          attract.hidden = false;
+        }
+
+        function createButton(value, action) {
+          const button = document.createElement("input");
+          button.type = "button"
+          button.value = value;
+          button.onclick = action;
+          return button;
+        }
+
+        function createSelectButton(wordList) {
+          return createButton("Select", () => chooseList(wordList));
+        }
+
+        function createWordListEntry(wordList, buttons) {
+          const block = document.createElement("div");
+          const listName = document.createTextNode(wordList.name);
+          buttons.forEach(button => block.appendChild(button));
+          block.appendChild(listName);
+          lists.appendChild(block);
+          return block;
         }
 
         function refreshWordLists() {
           lists.innerHTML = "";
-          word_lists.concat(localWordLists).forEach(word_list => {
-            let button = document.createElement("input");
-            button.setAttribute("type", "button");
-            button.setAttribute("value", word_list.name);
-            button.onclick = () => {
-              choose_list(word_list);
-            }
-            lists.appendChild(button);
-          });
+          wordLists.forEach(wordList => createWordListEntry(wordList, [createSelectButton(wordList)]));
+          localWordLists.forEach((wordList, index) => createWordListEntry(wordList, [
+            createSelectButton(wordList),
+            createButton("Edit", () => editList(index)),
+            createButton("Delete", () => deleteList(index)),
+          ]));
         }
         refreshWordLists();
 
@@ -525,7 +584,7 @@
           if (event.keyCode == 13) submit.click();
         };
 
-        var score, index, r, word, randomizer, incorrectWords, words, word_list;
+        var score, index, r, word, randomizer, incorrectWords, words, wordList;
 
         function say(phrase) {
           window.speechSynthesis.cancel();
@@ -591,10 +650,10 @@
               populate();
             } else {
               updateScoreboard(`Game over. You got ${score} correct.`);
-              if (score !== words.length) refine.removeAttribute("hidden");
+              if (score !== words.length) refine.hidden = false;
               submit.onclick = null;
-              repeat.setAttribute("hidden", "");
-              define.setAttribute("hidden", "");
+              repeat.hidden = true;
+              define.hidden = true;
           }
           } else {
             say(word);
@@ -615,24 +674,39 @@
           randomizer = Array.from(Array(words.length).keys());
           shuffleArray(randomizer);
           submit.onclick = advance;
-          repeat.removeAttribute("hidden");
-          define.removeAttribute("hidden");
+          repeat.hidden = false;
+          define.hidden = false;
           populate();
           textbox.focus();
         }
 
         function reset() {
-          words = word_list.words;
+          words = wordList.words;
           initialize();
         }
 
         function refinedReset() {
           words = incorrectWords;
-          refine.setAttribute("hidden", "");
+          refine.hidden = true;
           initialize();
         }
 
         function upload() {
+          function handleDialogAddClose() {
+            if (dialog.returnValue !== "cancel") {
+              localWordLists.push({
+                name: dialog_name.value,
+                words: parseWords(dialog_words.value),
+              });
+              localStorage.setItem("lists", JSON.stringify(localWordLists));
+              refreshWordLists();
+            }
+            dialog_name.value = "";
+            dialog_words.value = "";
+            dialog.removeEventListener("close", handleDialogAddClose);
+          }
+
+          dialog.addEventListener("close", handleDialogAddClose);
           dialog.showModal();
         }
                         
@@ -641,18 +715,7 @@
         repeat.onclick = sayWord;
         define.onclick = defineWord;
         buttonUpload.onclick = upload;
-        dialog.addEventListener("close", () => {
-          if (dialog.returnValue !== "cancel") {
-            localWordLists.push({
-              name: dialog_name.value,
-              words: dialog_words.value.split("\n"),
-            });
-            localStorage.setItem("lists", JSON.stringify(localWordLists));
-            refreshWordLists();
-          }
-          dialog_words.value = "";
-          dialog_name.value = "";
-        });
+        buttonQuit.onclick = quit;
       })();
     </script>
   </body>
