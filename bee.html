@@ -584,7 +584,7 @@
           if (event.keyCode == 13) submit.click();
         };
 
-        var score, index, r, word, randomizer, incorrectWords, words, wordList;
+        var score, index, r, spellings, word, randomizer, incorrectWords, words, wordList;
 
         function say(phrase) {
           window.speechSynthesis.cancel();
@@ -639,7 +639,7 @@
           guess = textbox.value
           if (guess !== "") {
             textbox.value = "";
-            if (guess.toLowerCase() === word.toLowerCase()) {
+            if (spellings.some(spelling => guess.toLowerCase() === spelling.toLowerCase())) {
               ++score;
             } else {
               incorrectWords.push(word);
@@ -662,7 +662,8 @@
 
         function populate() {
           r = randomizer[index];
-          word = words[r];
+          spellings = words[r].split("|");
+          word = spellings[0];
           progress.innerText = `Progress: ${index + 1} / ${words.length}`;
           say(word);
         }
@@ -676,6 +677,7 @@
           submit.onclick = advance;
           repeat.hidden = false;
           define.hidden = false;
+          refine.hidden = true;
           populate();
           textbox.focus();
         }
@@ -687,7 +689,6 @@
 
         function refinedReset() {
           words = incorrectWords;
-          refine.hidden = true;
           initialize();
         }
 
