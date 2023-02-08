@@ -1,0 +1,270 @@
+<html>
+  <head>
+    <title>Bright Star Line Practice</title>
+    <style>
+      #textarea {font-size:16;font-family:Courier;width:6in;height:1in;margin:0 1.25in;overflow-y:auto;}
+      #script {font-size:16;font-family:Courier;width:6in;height:6in;margin:0 1.25in;overflow-y:auto;display:flex;flex-direction:column;}
+      #script>:first-child {margin-top: auto !important;}
+      .character-name {text-align:center;font-weight:bold;}
+    </style>
+    <meta name="referrer" content="no-referrer">
+  </head>
+  <body>
+    <div id="attract">
+    <h1>Bright Star Line Practice</h1>
+      Choose character.
+      <select id="character-select">
+        <option disabled selected value> -- choose your character -- </option>
+      </select>
+      <select id="scene-select" hidden>
+        <option disabled selected value> -- choose the scene -- </option>
+      </select>
+      <input id="action" type="button" value="Action!" hidden>
+    </div>
+    <div id="play" hidden>
+      <div id="script"></div>
+      <textarea id="textarea" autocorrect="off" spellcheck="false"></textarea>
+      <div>
+        <input id="submit" type="button" hidden>
+        <input id="restart" type="button" value="Restart">
+        <input id="quit" type="button" value="Quit">
+      </div>
+    </div>
+    <script>
+      alice = "Alice";
+      jimmyRay = "Jimmy Ray";
+      daddyCane = "Daddy Cane";
+      billyCane = "Billy Cane";
+      margo = "Margo";
+      const scenes = [
+        {act: 1, scene: 1, lines: [
+        ]},
+        {act: 1, scene: 2, lines: [
+          {character: daddyCane, line: "Well, look how you've grown!"},
+          {character: billyCane, line: "Daddy!"},
+          {character: daddyCane, line: "So good to see you, son."},
+          {character: daddyCane, line: "You win the war all by yourself?"},
+          {character: billyCane, line: "I had a little help."},
+          {character: daddyCane, line: "Well, I salute you."},
+          {character: billyCane, line: "Then you salute us all."},
+          {character: margo, line: "Hi, Billy."},
+          {character: daddyCane, line: "Look who I'm visiting with!"},
+          {character: billyCane, line: "Margo! Is that you? You've grown every which-a-way."},
+          {character: margo, line: "I was just delivering a book your Daddy ordered."},
+          {character: billyCane, line: "Now Daddy, have you been reading again?"},
+          {character: daddyCane, line: "I have, son."},
+          {character: billyCane, line: "Daddy, I've warned you about reading. That could make you smart."},
+          {character: daddyCane, line: "I know, call the hillbilly police."},
+          {character: margo, line: "Mr. Cane, Billy's been sending me his stories from overseas, and I've got a stack of them all edited."},
+          {character: billyCane, line: "And I got published in Stars and Stripes!"},
+          {character: margo, line: "Billy!"},
+          {character: billyCane, line: "Did you get my latest?"},
+          {character: margo, line: "I sure did. You can come by the bookstore and pick it up."},
+          {character: billyCane, line: "Well, what'd you think?"},
+          {character: margo, line: "You don't have to know everything all at once."},
+          {character: billyCane, line: "Margo, that is so you! Mama inside? Or are you making her plow again, Daddy?"},
+          {character: margo, line: "Billy, I've got to get back."},
+          {character: billyCane, line: "What's gotten into her? And where is Mama? Mama!"},
+          {character: billyCane, line: "What is it, Daddy?"},
+          {character: daddyCane, line: "No way to write you, son."},
+          {character: daddyCane, line: "Why don't you pick a floribunda rose, son? That was her favorite."},
+          {character: daddyCane, line: "Here she is. Under the walnut tree."},
+          {character: billyCane, line: "You bought her a gravestone angel."},
+          {character: daddyCane, line: "There was this lovely one in back of Julia Wolfe's garage. She made me a nice deal on it as a courtesy."},
+          {character: billyCane, line: "It's beautiful."},
+          {character: daddyCane, line: "The owls are speaking tonight. I'll go hear what they have to say."},
+          {character: billyCane, line: "Mama, when I was in mud up to my knees, I thought it would be you mourning me. Not this way round."},
+          {character: billyCane, line: "And, I'm sorry that daddy put an angel over your grave. You used to make fun of people for doing that. You said you'd rather let your deeds speak for your time on Earth."},
+          {character: billyCane, line: "And, I'm sorry that daddy put an angel over your grave. You used to make fun of people for doing that. You said you'd rather let your deeds speak for your time on Earth."},
+          {character: billyCane, line: "Mama, thank you for the way you raised me. The way you spoke, your parlance around the house, made me a curious lover of words, and you always pointed me toward the writers who used them well. Remember when you had me copy stories out of the Asheville Southern Journal, just so I'd know what it feels like to write well?"},
+          {character: billyCane, line: "Mama, thank you for the way you raised me. The way you spoke, your parlance around the house, made me a curious lover of words, and you always pointed me toward the writers who used them well. Remember when you had me copy stories out of the Asheville Southern Journal, just so I'd know what it feels like to write well?"},
+          {character: billyCane, line: "I made it back home like you always said I would. But I never thought homecoming could be so cruel. You are my Mama, and I place my hand here...to touch you now and forever."},
+        ]},
+        {act: 1, scene: 3, lines: []},
+        {act: 1, scene: 4, lines: []},
+        {act: 1, scene: 5, lines: [
+          {character: alice, line: "Now that's a sight. The Mayor's son with his sleeves rolled up repairing an ice box."},
+          {character: jimmyRay, line: "Well, if it isn't the little princess of Zebulon. Princess, what's the matter with repairing an ice box?"},
+          {character: alice, line: "Jimmy Ray, an ice box has no moving parts. My granny could repair an ice box. There's ice and a box. I think you're just showing off your muscles."},
+          {character: jimmyRay, line: "Keep talking, Alice Murphy. I'm curious how your mind works."},
+          {character: alice, line: "Okay. You remind me of Adonis. You know who Adonis is?"},
+          {character: jimmyRay, line: "I sure do. He's a Greek God."},
+          {character: alice, line: "Well, you remind me of him. In fact, you remind me of the myth of Adonis when he repaired the ice box."},
+          {character: jimmyRay, line: "You ever think you might be too smart for this town?"},
+          {character: alice, line: "All the time."},
+          {character: jimmyRay, line: "What makes you so sure?"},
+          {character: alice, line: "I entered an essay contest in Raleigh. The first prize was five dollars, and I won it."},
+          {character: jimmyRay, line: "What was it about?"},
+          {character: alice, line: "I wrote about how there should be a rebirth of Southern writers, all writing about the Southern way, and that's how we can make our voices known."},
+          {character: jimmyRay, line: "I don't know how a group of judges from Raleigh could turn that down."},
+          {character: alice, line: "They couldn't. I took that five dollars and put it toward my college fund."},
+          {character: jimmyRay, line: "How much do you have in your college fund?"},
+          {character: alice, line: "Five dollars."},
+          {character: alice, line: "Want a biscuit?"},
+          {character: jimmyRay, line: "I wouldn't mind havin' a biscuit."},
+          {character: alice, line: "Your hands are dirty! You don't want to eat a dirty biscuit."},
+          {character: jimmyRay, line: "You better feed it to me then."},
+          {character: alice, line: "Now, you and I were thinking the exact same thought."},
+          {character: jimmyRay, line: "You got a little wildcat about you, Alice Murphy."},
+          {character: alice, line: "What's that book?"},
+          {character: jimmyRay, line: "Hey there!"},
+          {character: jimmyRay, line: "F. Scott Fitzgerald. He's a new writer."},
+          {character: alice, line: "I know who he is. \"The Beautiful and Damned.\" Is that us, Jimmy Ray?"},
+          {character: jimmyRay, line: "Damned if I know, but you're sure beautiful. I finished it. You can keep it."},
+          {character: alice, line: "If my daddy sees the title he'll kill me."},
+          {character: jimmyRay, line: "Read it under the covers."},
+          {character: alice, line: "So, who you gonna take to the Couples’ Day dance?"},
+          {character: jimmyRay, line: "I don't know yet."},
+          {character: alice, line: "Well, I'm standing right here in front of you."},
+          {character: jimmyRay, line: "That's not proper, you asking me."},
+          {character: alice, line: "I read in a book that sometimes you have to plant an idea in a boy's head."},
+          {character: jimmyRay, line: "Well, that might be a pretty smart book."},
+        ]},
+        {act: 1, scene: 6, lines: []},
+        {act: 1, scene: 7, lines: []},
+        {act: 1, scene: 8, lines: []},
+        {act: 1, scene: 9, lines: []},
+        {act: 1, scene: 10, lines: []},
+        {act: 1, scene: 11, lines: []},
+        {act: 1, scene: 12, lines: []},
+        {act: 1, scene: 13, lines: []},
+        {act: 1, scene: 14, lines: []},
+        {act: 1, scene: 15, lines: []},
+        {act: 1, scene: 16, lines: []},
+        {act: 2, scene: 0, lines: []},
+        {act: 2, scene: 1, lines: []},
+        {act: 2, scene: 2, lines: []},
+        {act: 2, scene: 3, lines: []},
+        {act: 2, scene: 4, lines: []},
+        {act: 2, scene: 5, lines: []},
+        {act: 2, scene: 6, lines: []},
+        {act: 2, scene: 7, lines: []},
+        {act: 2, scene: 8, lines: []},
+        {act: 2, scene: 9, lines: []},
+      ];
+      const characters = new Map();
+      scenes.forEach((scene, idx) => {
+        scene.lines.forEach(line => {
+          const character = line.character;
+          if(!characters.has(character)) {
+            characters.set(character, {scenes: new Set()});
+          }
+          characters.get(character).scenes.add(idx);
+        });
+      });
+
+      (function() {
+        characterSelect = document.getElementById("character-select");
+        sceneSelect = document.getElementById("scene-select");
+        actionButton = document.getElementById("action");
+        scriptDiv = document.getElementById("script");
+        attract = document.getElementById("attract");
+        play = document.getElementById("play");
+        buttonUpload = document.getElementById("upload");
+        textarea = document.getElementById("textarea");
+        submitButton = document.getElementById("submit");
+        restart = document.getElementById("restart");
+        buttonQuit = document.getElementById("quit");
+
+        for (const character of characters.keys()) {
+          const option = document.createElement("option");
+          option.value = option.innerHTML = character;
+          characterSelect.appendChild(option);
+        }
+        characterSelect.onchange = event => {
+          sceneSelect.value = "";
+          while (sceneSelect.childElementCount > 1) sceneSelect.removeChild(sceneSelect.lastChild);
+          for (const sceneIndex of characters.get(event.target.value).scenes) {
+            const option = document.createElement("option");
+            const scene = scenes[sceneIndex];
+            option.value = sceneIndex;
+            option.innerHTML = `ACT ${scene.act} SCENE ${scene.scene}`;
+            sceneSelect.appendChild(option);
+          }
+          sceneSelect.hidden = false;
+        }
+        sceneSelect.onchange = event => {
+          actionButton.hidden = false;
+        }
+
+        let lineIndex, scene;
+
+        function quit() {
+          play.hidden = true;
+          attract.hidden = false;
+        }
+
+        textarea.onkeydown = function(event) {
+          if (event.keyCode == 13) {
+            event.preventDefault();
+            submitButton.click();
+          }
+        };
+
+        function normalize(s) {
+          return s.toLowerCase().replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
+        }
+
+        function submit() {
+          const scene = scenes[sceneSelect.value]
+          if (lineIndex < scene.lines.length) {
+            const line = scene.lines[lineIndex].line;
+            if (normalize(textarea.value) === normalize(line)) {
+              const lineElement = document.createElement("p");
+              lineElement.innerHTML = line;
+              scriptDiv.appendChild(lineElement);
+              scriptDiv.scrollTop = scriptDiv.scrollHeight;
+              textarea.value = "";
+              lineIndex++;
+              advance();
+            }
+          }
+        }
+      
+        function advance() {
+          const scene = scenes[sceneSelect.value];
+          if (lineIndex < scene.lines.length) {
+            const line = scene.lines[lineIndex];
+            if(line.character === characterSelect.value) {
+              const nameElement = document.createElement("p");
+              nameElement.classList.add("character-name");
+              nameElement.innerHTML = line.character.toUpperCase();
+              scriptDiv.appendChild(nameElement);
+              scriptDiv.scrollTop = scriptDiv.scrollHeight;
+            } else {
+              const nameElement = document.createElement("p");
+              nameElement.classList.add("character-name");
+              nameElement.innerHTML = line.character.toUpperCase();
+              scriptDiv.appendChild(nameElement);
+  
+              const lineElement = document.createElement("p");
+              lineElement.innerHTML = line.line;
+              scriptDiv.appendChild(lineElement);
+              scriptDiv.scrollTop = scriptDiv.scrollHeight;
+  
+              lineIndex++;
+              advance();
+            }
+          } else {
+            const element = document.createElement("p");
+            element.innerHTML = "    [END SCENE]";
+            scriptDiv.appendChild(element);
+            scriptDiv.scrollTop = scriptDiv.scrollHeight;
+            textarea.readOnly = true;
+          }
+        }
+
+        function action() {
+          lineIndex = 0;
+          play.hidden = false;
+          attract.hidden = true;
+          advance();
+        }
+
+        actionButton.onclick = action;
+        submitButton.onclick = submit;
+        buttonQuit.onclick = quit;
+      })();
+    </script>
+  </body>
+</html>
