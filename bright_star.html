@@ -2,8 +2,8 @@
   <head>
     <title>Bright Star Line Practice</title>
     <style>
-      #textarea {font-size:16;font-family:Courier;width:6in;height:1in;margin:0 1.25in;overflow-y:auto;}
-      .script {font-size:16;font-family:Courier;width:6in;height:6in;padding:0 1.25in;overflow-y:auto;display:flex;flex-direction:column;}
+      #textarea {font-size:16;font-family:Courier;width:61ch;height:1in;margin:0 1.25in;overflow-y:auto;}
+      .script {font-size:16;font-family:Courier;width:61ch;height:6in;padding:0 1.25in;overflow-y:auto;display:flex;flex-direction:column;}
       .script p{margin:0;}
       .script>:first-child {margin-top: auto !important;}
       p.line-break {min-height:1em;}
@@ -16,6 +16,7 @@
       p.prose {}
       p.act-heading {text-align:center;font-weight:bold;}
       p.scene-heading {text-align:center;font-weight:bold;}
+      .has-line{background-color:burlywood}
     </style>
     <meta name="referrer" content="no-referrer">
   </head>
@@ -23,13 +24,9 @@
     <div id="attract">
     <h1>Bright Star Line Practice</h1>
       Choose character.
-      <select id="character-select">
-        <option disabled selected value> -- choose your character -- </option>
-      </select>
-      <select id="scene-select" hidden>
-        <option disabled selected value> -- choose the scene -- </option>
-      </select>
-      <input id="action" type="button" value="Action!" hidden>
+      <select id="character-select"></select>
+      <select id="scene-select"></select>
+      <input id="action" type="button" value="Action!">
     </div>
     <div id="play" hidden>
       <div id="script" class="script"></div>
@@ -37,8 +34,9 @@
       <div>
         <input id="submit" type="button" hidden>
         <input id="skip" type="button" value="Skip">
-        <input id="restart" type="button" value="Restart">
         <input id="quit" type="button" value="Quit">
+        <input id="next-scene" type="button" value="Next Scene">
+        <input id="my-next-scene" type="button" value="My Next Scene">
       </div>
     </div>
     <script type="text/javascript" src="bright_star.js"></script>
