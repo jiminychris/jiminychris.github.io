@@ -1,4 +1,5 @@
 LINE_BREAK = "LINE_BREAK"
+HORIZONTAL_RULE = "HORIZONTAL_RULE"
 SONG_TITLE = "SONG_TITLE"
 WRYLIE = "WRYLIE"
 LYRICS = "LYRICS"
@@ -9,11 +10,14 @@ SCENE_START = "SCENE_START"
 ALL = "ALL";
 NONE = "NONE";
 
+ASCII_A = 'a'.charCodeAt(0);
+ASCII_Z = 'z'.charCodeAt(0);
+
 function onload(script) {
     const characters = new Map();
     const aliases = new Map();
-    characters.set(ALL, {scenes: new Set(), sort: 0});
-    characters.set(NONE, {scenes: new Set(), sort: 9999});
+    characters.set(ALL, {scenes: new Set(), sort: 0, cues: new Map()});
+    characters.set(NONE, {scenes: new Set(), sort: 9999, cues: new Map()});
 
     function resolveAlias(name) {
 	const trimmed = name.replace("(CONT'D)", "").trim();
@@ -72,7 +76,8 @@ function onload(script) {
                     } break;
     
                     case '|': {
-                        scene.chunks.push({type: LYRICS, parts: line.slice(1).split("|").map(p => p.trim())});
+    			const chunk = {type: LYRICS, parts: line.slice(1).split("|").map(p => p.trim())};
+                        scene.chunks.push(chunk);
                     } break;
     
                     case '=': {
@@ -89,12 +94,60 @@ function onload(script) {
                             scene.chunks.push({type: PROSE, text: line});
                             for (const speaker of speakers) {
                                 if (!characters.has(speaker)) {
-                                    characters.set(speaker, {scenes: new Set(), sort: 0});
+                                    characters.set(speaker, {scenes: new Set(), sort: 0, cues: new Map()});
                                 }
-                                characters.get(speaker).scenes.add(sceneIndex);
-                                characters.get(speaker).sort += 1;
+				const character = characters.get(speaker);
+                                character.scenes.add(sceneIndex);
                             }
 			}
+                    } break;
+                }
+            }
+        }
+    }
+
+    {
+        let sceneStart, names, previousNames, previousLine;
+	for (let sceneIndex = 0; sceneIndex < scenes.length; ++sceneIndex) {
+	    const scene = scenes[sceneIndex];
+	    for (const chunk of scene.chunks) {
+                switch (chunk.type) {
+                    case SCENE_START: {
+    			sceneStart = chunk;
+                    } break;
+    
+                    case LYRICS: {
+                        previousNames = names;
+			previousLine = chunk;
+                    } break;
+    
+                    case NAMES: {
+			names = chunk;
+                    } break;
+
+                    case PROSE: {
+                        for (const name of names.names) {
+			    const speaker = resolveAlias(name);
+			    const character = characters.get(speaker);
+			    if (!character.cues.has(sceneIndex)) character.cues.set(sceneIndex, []);
+			    const cues = character.cues.get(sceneIndex);
+                            character.scenes.add(sceneIndex);
+			    if (previousLine.type === PROSE && previousNames.names.map(resolveAlias).includes(speaker)) {
+				cues.push({type: LINE_BREAK});
+			    } else {
+                                character.sort += 1;
+				if (cues.length > 0) {
+   				    cues.push({type: HORIZONTAL_RULE});
+				}
+				cues.push(previousNames);
+				cues.push(previousLine);
+				cues.push({type: LINE_BREAK});
+				cues.push(names);
+				cues.push(chunk);
+			    }
+                        }
+			previousNames = names;
+			previousLine = chunk;
                     } break;
                 }
             }
@@ -105,11 +158,12 @@ function onload(script) {
     sceneSelect = document.getElementById("scene-select");
     actionButton = document.getElementById("action");
     scriptDiv = document.getElementById("script");
+    cuesDiv = document.getElementById("cues");
     attract = document.getElementById("attract");
     play = document.getElementById("play");
-    buttonUpload = document.getElementById("upload");
+    sceneHeading = document.getElementById("scene-heading");
     textarea = document.getElementById("textarea");
-    submitButton = document.getElementById("submit");
+    deliverButton = document.getElementById("deliver");
     buttonQuit = document.getElementById("quit");
     skipButton = document.getElementById("skip");
     nextSceneButton = document.getElementById("next-scene");
@@ -121,6 +175,8 @@ function onload(script) {
         option.value = option.innerHTML = character;
         characterSelect.appendChild(option);
     }
+    characterSelect.size = characters.size;
+
     for (let sceneIndex = 0; sceneIndex < scenes.length; ++sceneIndex) {
         const option = document.createElement("option");
         const scene = scenes[sceneIndex];
@@ -128,9 +184,23 @@ function onload(script) {
         option.innerHTML = `ACT ${scene.act}, SCENE ${scene.scene}`;
         sceneSelect.appendChild(option);
     }
+    sceneSelect.size = scenes.length;
+
+    function populateCues() {
+	cuesDiv.innerHTML = "";
+	const character = characters.get(characterSelect.value);
+	if (character.cues.has(parseInt(sceneSelect.value))) {
+	    const cues = character.cues.get(parseInt(sceneSelect.value));
+	    for (let cueIndex = 0; cueIndex < cues.length; ++cueIndex) {
+		const chunk = cues[cueIndex];
+		renderChunk(cuesDiv, chunk);
+	    }
+	}
+        cuesDiv.scrollTop = 0;
+    }
 
     characterSelect.onchange = event => {
-        actionButton.disabled = false;
+	populateCues();
         for (let sceneIndex = 0; sceneIndex < scenes.length; ++sceneIndex) {
 	    sceneSelect.children[sceneIndex].classList.remove("has-line");
 	    if (characters.get(characterSelect.value).scenes.has(sceneIndex)) {
@@ -140,150 +210,205 @@ function onload(script) {
     }
     characterSelect.onchange();
 
-    let sceneIndex, chunkIndex, scene, speakers;
+    sceneSelect.onchange = event => {
+	populateCues();
+    }
+
+    let sceneIndex, chunkIndex, scene, speakers, proseFeedback;
 
     function quit() {
         play.hidden = true;
         attract.hidden = false;
-        scriptDiv.innerHTML = "";
     }
 
     textarea.onkeydown = function(event) {
         if (event.keyCode == 13) {
             event.preventDefault();
-            submitButton.click();
+            deliverButton.click();
         }
     };
 
-    function normalize(s) {
-        return s.toLowerCase().normalize("NFD")
-	    .replace(/[\u0300-\u036f]/g, "")
-	    .replace(/<\/?[ui]>/g, "")
-	    .replace(/[^\w\s]|_/g, "")
-	    .replace(/\s+/g, " ");
+    function toLowerCaseASCII(s) {
+	return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     }
 
-    function submit() {
-        const scene = scenes[sceneIndex]
+    function normalize(s) {
+        return toLowerCaseASCII(s)
+	    .replace(/<\/?[ui]>/g, "")
+	    .replace(/[^\w]|_/g, "")
+	    .trim();
+    }
+
+    function deliver() {
+        const scene = scenes[sceneIndex];
         if (chunkIndex < scene.chunks.length) {
             const line = scene.chunks[chunkIndex].text;
-            if (normalize(textarea.value) === normalize(line)) {
-                const element = document.createElement("p");
+	    const target = normalize(line);
+	    const actual = normalize(textarea.value);
+	    let element;
+	    if (proseFeedback !== undefined) {
+		element = proseFeedback;
+	    } else {
+		element = document.createElement("p");
                 element.classList.add("prose");
-                element.innerHTML = line;
                 scriptDiv.appendChild(element);
-                scriptDiv.scrollTop = scriptDiv.scrollHeight;
+	    }
+            if (actual === target) {
+                element.innerHTML = line;
                 textarea.value = "";
-                chunkIndex++;
+		proseFeedback = undefined
                 advance();
-            }
+            } else {
+		const text = toLowerCaseASCII(textarea.value);
+		const targetMatches = [];
+		let targetIndex = 0;
+		for (let textIndex = 0; textIndex < text.length; ++textIndex) {
+		    const code = text.charCodeAt(textIndex);
+		    if (ASCII_A <= code && code <= ASCII_Z) {
+			targetMatches.push(text.charAt(textIndex) === target.charAt(targetIndex++));
+		    } else {
+		        targetMatches.push(true);
+		    }
+		}
+		let buffer = "";
+		for (let textIndex = 0; textIndex < text.length; ++textIndex) {
+		    const ch = textarea.value.charAt(textIndex)
+		    if (targetMatches[textIndex]) {
+			buffer += ch;
+		    } else {
+			buffer += `<span class="incorrect">${ch}</span>`;
+		    }
+		}
+		if(actual.length < target.length) {
+  		    buffer += '<span class="incorrect">...</span>';
+		}
+		element.innerHTML = buffer;
+		proseFeedback = element;
+	    }
+            scriptDiv.scrollTop = scriptDiv.scrollHeight;
         }
     }
 
     function advance() {
+        chunkIndex++;
+	displayChunk();
+    }
+
+    function renderChunk(div, chunk) {
+        if (chunk.type === SONG_TITLE) {
+            const element = document.createElement("p");
+            element.classList.add("song-title");
+            element.innerHTML = chunk.text;
+            div.appendChild(element);
+        } else if (chunk.type === ACT_START) {
+            const element = document.createElement("p");
+            element.classList.add("act-heading");
+            element.innerHTML = `ACT ${chunk.number}`;
+            div.appendChild(element);
+        } else if (chunk.type === SCENE_START) {
+            const element = document.createElement("p");
+            element.classList.add("scene-heading");
+            element.innerHTML = `SCENE ${chunk.number}`;
+            div.appendChild(element);
+        } else if (chunk.type === WRYLIE) {
+            const element = document.createElement("p");
+            element.classList.add("wrylie");
+            element.innerHTML = chunk.text;
+            div.appendChild(element);
+        } else if (chunk.type === LINE_BREAK) {
+            const element = document.createElement("p");
+            element.classList.add("line-break");
+            div.appendChild(element);
+        } else if (chunk.type === HORIZONTAL_RULE) {
+            div.appendChild(document.createElement("hr"));
+        } else if (chunk.type === LYRICS) {
+            const element = document.createElement("div");
+            element.classList.add("column-group");
+            for (part of chunk.parts) {
+                const el = document.createElement("p");
+                el.classList.add("lyric");
+                el.innerHTML = part;
+                element.appendChild(el);
+            }
+            div.appendChild(element);
+        } else if (chunk.type === NAMES) {
+            const element = document.createElement("div");
+            element.classList.add("column-group");
+            for (name of chunk.names) {
+                const el = document.createElement("p");
+                el.classList.add("character-name");
+                el.innerHTML = name;
+                element.appendChild(el);
+            }
+            div.appendChild(element);
+        } else if (chunk.type === PROSE) {
+            const element = document.createElement("p");
+            element.classList.add("prose");
+            element.innerHTML = chunk.text;
+            div.appendChild(element);
+        }
+    }
+
+    function displayChunk() {
         const scene = scenes[sceneIndex];
         if (chunkIndex < scene.chunks.length) {
             const chunk = scene.chunks[chunkIndex];
-            if (chunk.type === SONG_TITLE) {
-                const element = document.createElement("p");
-                element.classList.add("song-title");
-                element.innerHTML = chunk.text;
-                scriptDiv.appendChild(element);
-                scriptDiv.scrollTop = scriptDiv.scrollHeight;
-
-                chunkIndex++;
-                advance();
-            } else if (chunk.type === ACT_START) {
-                const element = document.createElement("p");
-                element.classList.add("act-heading");
-                element.innerHTML = `ACT ${chunk.number}`;
-                scriptDiv.appendChild(element);
-                scriptDiv.scrollTop = scriptDiv.scrollHeight;
-
-                chunkIndex++;
-                advance();
-            } else if (chunk.type === SCENE_START) {
-                const element = document.createElement("p");
-                element.classList.add("scene-heading");
-                element.innerHTML = `SCENE ${chunk.number}`;
-                scriptDiv.appendChild(element);
-                scriptDiv.scrollTop = scriptDiv.scrollHeight;
-
-                chunkIndex++;
-                advance();
-            } else if (chunk.type === WRYLIE) {
-                const element = document.createElement("p");
-                element.classList.add("wrylie");
-                element.innerHTML = chunk.text;
-                scriptDiv.appendChild(element);
-                scriptDiv.scrollTop = scriptDiv.scrollHeight;
-
-                chunkIndex++;
-                advance();
-            } else if (chunk.type === LINE_BREAK) {
-                const element = document.createElement("p");
-                element.classList.add("line-break");
-                scriptDiv.appendChild(element);
-                scriptDiv.scrollTop = scriptDiv.scrollHeight;
-
-                chunkIndex++;
-                advance();
-            } else if (chunk.type === LYRICS) {
-                const element = document.createElement("div");
-                element.classList.add("column-group");
-
-                for (part of chunk.parts) {
-                    const el = document.createElement("p");
-                    el.classList.add("lyric");
-                    el.innerHTML = part;
-                    element.appendChild(el);
-                }
-                scriptDiv.appendChild(element);
-                scriptDiv.scrollTop = scriptDiv.scrollHeight;
-
-                chunkIndex++;
-                advance();
-            } else if (chunk.type === NAMES) {
-                const element = document.createElement("div");
-                element.classList.add("column-group");
-
-                for (name of chunk.names) {
-                    const el = document.createElement("p");
-                    el.classList.add("character-name");
-                    el.innerHTML = name;
-                    element.appendChild(el);
-                }
-                scriptDiv.appendChild(element);
-                scriptDiv.scrollTop = scriptDiv.scrollHeight;
-                speakers = chunk.names.map(resolveAlias);
-
-                chunkIndex++;
-                advance();
-            } else if (chunk.type === PROSE) {
-                if (characterSelect.value === ALL || speakers.includes(characterSelect.value)) {
-                } else {
-                    const element = document.createElement("p");
-                    element.classList.add("prose");
-                    element.innerHTML = chunk.text;
-                    scriptDiv.appendChild(element);
-                    scriptDiv.scrollTop = scriptDiv.scrollHeight;
-                    
-                    chunkIndex++;
-                    advance();
-                }
-            }
+	    if (chunk.type === PROSE && (characterSelect.value === ALL || speakers.includes(characterSelect.value))) {
+		deliverButton.disabled = skipButton.disabled = false;
+	    } else {
+		if (chunk.type === NAMES) {
+                    speakers = chunk.names.map(resolveAlias);
+		}
+		renderChunk(scriptDiv, chunk);
+		scriptDiv.scrollTop = scriptDiv.scrollHeight;
+		advance();
+	    }
         } else {
+            deliverButton.disabled = skipButton.disabled = true;
             textarea.readOnly = true;
         }
     }
 
+    function goToNextScene() {
+	const idx = sceneIndex + 1;
+	if (idx < scenes.length) {
+	    sceneSelect.value = idx.toString();
+	    action();
+	}
+    }
+
+    function findMyNextScene() {
+	const sceneIndices = [...characters.get(characterSelect.value).scenes].sort((a, b) => a-b);
+	for (idx of sceneIndices) {
+	    if (sceneIndex < idx) {
+		return idx;
+	    }
+	}
+	return -1;
+    }
+
+    function goToMyNextScene() {
+	const idx = findMyNextScene();
+	if (idx >= 0) {
+	    sceneSelect.value = idx.toString();
+	    action();
+	}
+    }
+
     function initialize(sceneIdx) {
-	if (sceneIdx < scenes.length) {
+	if (0 <= sceneIdx && sceneIdx < scenes.length) {
             sceneIndex = sceneIdx;
+
+            scriptDiv.innerHTML = "";
             chunkIndex = 0;
             play.hidden = false;
             attract.hidden = true;
-            advance();
+            textarea.value = "";
+            textarea.readOnly = false;
+	    sceneHeading.innerHTML = sceneSelect.children[sceneIndex].innerHTML;
+	    nextSceneButton.disabled = scenes.length <= (sceneIndex + 1);
+	    myNextSceneButton.disabled = findMyNextScene() < 0;
+            displayChunk();
 	}
     }
 
@@ -296,26 +421,12 @@ function onload(script) {
         if (chunkIndex < scene.chunks.length) {
             const chunk = scene.chunks[chunkIndex];
             textarea.value = chunk.text;
-            submit();
+            deliver();
         }
     }
 
-    function goToNextScene() {
-	initialize(sceneIndex + 1);
-    }
-
-    function goToMyNextScene() {
-	const sceneIndices = [...characters.get(characterSelect.value).scenes].sort((a, b) => a-b);
-	for (idx of sceneIndices) {
-	    if (sceneIndex < idx) {
-		initialize(idx);
-		return;
-	    }
-	}
-    }
-
     actionButton.onclick = action;
-    submitButton.onclick = submit;
+    deliverButton.onclick = deliver;
     buttonQuit.onclick = quit;
     skipButton.onclick = skip;
     nextSceneButton.onclick = goToNextScene;

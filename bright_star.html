@@ -2,10 +2,12 @@
   <head>
     <title>Bright Star Line Practice</title>
     <style>
-      #textarea {font-size:16;font-family:Courier;width:61ch;height:1in;margin:0 1.25in;overflow-y:auto;}
-      .script {font-size:16;font-family:Courier;width:61ch;height:6in;padding:0 1.25in;overflow-y:auto;display:flex;flex-direction:column;}
+      body{font-family:Courier}
+      #textarea {font-size:16;width:61ch;height:1in;margin:0 1.25in;overflow-y:auto;}
+      .script {font-size:16;width:61ch;height:8in;padding:0 1.25in;overflow-y:auto;display:flex;flex-direction:column;}
       .script p{margin:0;}
       .script>:first-child {margin-top: auto !important;}
+      .cues{display:block;height:9in;}
       p.line-break {min-height:1em;}
       .column-group {display:flex;}
       .column-group>*{flex:1;}
@@ -16,23 +18,31 @@
       p.prose {}
       p.act-heading {text-align:center;font-weight:bold;}
       p.scene-heading {text-align:center;font-weight:bold;}
-      .has-line{background-color:burlywood}
+      option{font-family:Courier;}
+      #scene-select>option:not(.has-line):before{content: "\00a0\00a0";}
+      #scene-select>option.has-line:before{content: "* ";}
+      .incorrect{color:red;}
+      .attract-controls{display:flex;align-items:flex-start;}
+      [hidden]{display:none;}
     </style>
     <meta name="referrer" content="no-referrer">
   </head>
   <body>
     <div id="attract">
-    <h1>Bright Star Line Practice</h1>
-      Choose character.
-      <select id="character-select"></select>
-      <select id="scene-select"></select>
-      <input id="action" type="button" value="Action!">
+      <h1>Bright Star Line Practice</h1>
+      <div class="attract-controls">
+        <select id="character-select"></select>
+        <select id="scene-select"></select>
+        <input id="action" type="button" value="Action!">
+        <div id="cues" class="script cues"></div>
+      </div>
     </div>
     <div id="play" hidden>
+      <h1 id="scene-heading"></h1>
       <div id="script" class="script"></div>
       <textarea id="textarea" autocorrect="off" spellcheck="false"></textarea>
       <div>
-        <input id="submit" type="button" hidden>
+        <input id="deliver" type="button" value="Deliver">
         <input id="skip" type="button" value="Skip">
         <input id="quit" type="button" value="Quit">
         <input id="next-scene" type="button" value="Next Scene">
