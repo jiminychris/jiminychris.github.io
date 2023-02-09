@@ -124,7 +124,7 @@ function onload(script) {
                     case NAMES: {
 			names = chunk;
                     } break;
-
+    
                     case PROSE: {
                         for (const name of names.names) {
 			    const speaker = resolveAlias(name);
@@ -134,6 +134,7 @@ function onload(script) {
                             character.scenes.add(sceneIndex);
 			    if (previousLine.type === PROSE && previousNames.names.map(resolveAlias).includes(speaker)) {
 				cues.push({type: LINE_BREAK});
+				cues.push(chunk);
 			    } else {
                                 character.sort += 1;
 				if (cues.length > 0) {
