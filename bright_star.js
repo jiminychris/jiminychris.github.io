@@ -20,12 +20,12 @@ function onload(script) {
     characters.set(NONE, {scenes: new Set(), sort: 9999, cues: new Map()});
 
     function resolveAlias(name) {
-	const trimmed = name.replace("(CONT'D)", "").trim();
-	if (aliases.has(trimmed)) {
-	    return aliases.get(trimmed);
-	}
-	aliases.set(trimmed, trimmed);
-	return trimmed;
+        const trimmed = name.replace("(CONT'D)", "").trim();
+        if (aliases.has(trimmed)) {
+            return aliases.get(trimmed);
+        }
+        aliases.set(trimmed, trimmed);
+        return trimmed;
     }
 
     const scenes = [];
@@ -33,74 +33,74 @@ function onload(script) {
         let act, speakers, sceneIndex;
         let scene = {chunks:[]}
         for (rawLine of script.split("\n")) {
-	    const line = rawLine.trim();
+            const line = rawLine.trim();
             if (line.length === 0) {
                 scene.chunks.push({type: LINE_BREAK});
             } else {
                 switch (line[0]) {
-                    case '@': {
-			scene = {chunks: []};
-			const chunk = {type: ACT_START, number: line.split(" ")[1]};
-			act = chunk.number;
-			scene.chunks.push(chunk);
-                    } break;
-    
-                    case '$': {
-		        if (scene.scene !== undefined) {
-			    scene = {chunks: []};
-			}
-			const chunk = {type: SCENE_START, number: line.split(" ")[1]};
-			scene.act = act;
-			scene.scene = chunk.number;
-			scene.chunks.push(chunk);
-                        sceneIndex = scenes.length;
-                        characters.get(ALL).scenes.add(sceneIndex);
-                        characters.get(NONE).scenes.add(sceneIndex);
-                        scenes.push(scene);
-                    } break;
-    
-                    case '!': {
-                        const names = line.slice(1).split("=")
-			const mainName = names[0];
-			for (const alias of names) {
-			    aliases.set(alias, mainName);
-			}
-                    } break;
-    
-                    case '#': {
-                        scene.chunks.push({type: SONG_TITLE, text: line});
-                    } break;
+                case '@': {
+                    scene = {chunks: []};
+                    const chunk = {type: ACT_START, number: line.split(" ")[1]};
+                    act = chunk.number;
+                    scene.chunks.push(chunk);
+                } break;
+                    
+                case '$': {
+                    if (scene.scene !== undefined) {
+                        scene = {chunks: []};
+                    }
+                    const chunk = {type: SCENE_START, number: line.split(" ")[1]};
+                    scene.act = act;
+                    scene.scene = chunk.number;
+                    scene.chunks.push(chunk);
+                    sceneIndex = scenes.length;
+                    characters.get(ALL).scenes.add(sceneIndex);
+                    characters.get(NONE).scenes.add(sceneIndex);
+                    scenes.push(scene);
+                } break;
+                    
+                case '!': {
+                    const names = line.slice(1).split("=")
+                    const mainName = names[0];
+                    for (const alias of names) {
+                        aliases.set(alias, mainName);
+                    }
+                } break;
+                    
+                case '#': {
+                    scene.chunks.push({type: SONG_TITLE, text: line});
+                } break;
 
-                    case '\\': {
-                        scene.chunks.push({type: WRYLIE, text: line.slice(1).trim()});
-                    } break;
-    
-                    case '|': {
-    			const chunk = {type: LYRICS, parts: line.slice(1).split("|").map(p => p.trim())};
-                        scene.chunks.push(chunk);
-                    } break;
-    
-                    case '=': {
-                        const names = line.slice(1).split('=').map(l => l.trim());
-                        speakers = names.map(resolveAlias);
-                        scene.chunks.push({type: NAMES, names});
-                    } break;
+                case '\\': {
+                    scene.chunks.push({type: WRYLIE, text: line.slice(1).trim()});
+                } break;
+                    
+                case '|': {
+                    const chunk = {type: LYRICS, parts: line.slice(1).split("|").map(p => p.trim())};
+                    scene.chunks.push(chunk);
+                } break;
+                    
+                case '=': {
+                    const names = line.slice(1).split('=').map(l => l.trim());
+                    speakers = names.map(resolveAlias);
+                    scene.chunks.push({type: NAMES, names});
+                } break;
 
-                    default: {
-			const lastChunk = scene.chunks[scene.chunks.length - 1];
-			if (lastChunk.type === PROSE) {
-                            lastChunk.text = [lastChunk.text, line].join(" ");
-			} else {
-                            scene.chunks.push({type: PROSE, text: line});
-                            for (const speaker of speakers) {
-                                if (!characters.has(speaker)) {
-                                    characters.set(speaker, {scenes: new Set(), sort: 0, cues: new Map()});
-                                }
-				const character = characters.get(speaker);
-                                character.scenes.add(sceneIndex);
+                default: {
+                    const lastChunk = scene.chunks[scene.chunks.length - 1];
+                    if (lastChunk.type === PROSE) {
+                        lastChunk.text = [lastChunk.text, line].join(" ");
+                    } else {
+                        scene.chunks.push({type: PROSE, text: line});
+                        for (const speaker of speakers) {
+                            if (!characters.has(speaker)) {
+                                characters.set(speaker, {scenes: new Set(), sort: 0, cues: new Map()});
                             }
-			}
-                    } break;
+                            const character = characters.get(speaker);
+                            character.scenes.add(sceneIndex);
+                        }
+                    }
+                } break;
                 }
             }
         }
@@ -108,48 +108,54 @@ function onload(script) {
 
     {
         let sceneStart, names, previousNames, previousLine;
-	for (let sceneIndex = 0; sceneIndex < scenes.length; ++sceneIndex) {
-	    const scene = scenes[sceneIndex];
-	    for (const chunk of scene.chunks) {
+        for (let sceneIndex = 0; sceneIndex < scenes.length; ++sceneIndex) {
+            const scene = scenes[sceneIndex];
+            for (const chunk of scene.chunks) {
                 switch (chunk.type) {
-                    case SCENE_START: {
-    			sceneStart = chunk;
-                    } break;
-    
-                    case LYRICS: {
-                        previousNames = names;
-			previousLine = chunk;
-                    } break;
-    
-                    case NAMES: {
-			names = chunk;
-                    } break;
-    
-                    case PROSE: {
-                        for (const name of names.names) {
-			    const speaker = resolveAlias(name);
-			    const character = characters.get(speaker);
-			    if (!character.cues.has(sceneIndex)) character.cues.set(sceneIndex, []);
-			    const cues = character.cues.get(sceneIndex);
-                            character.scenes.add(sceneIndex);
-			    if (previousLine.type === PROSE && previousNames.names.map(resolveAlias).includes(speaker)) {
-				cues.push({type: LINE_BREAK});
-				cues.push(chunk);
-			    } else {
-                                character.sort += 1;
-				if (cues.length > 0) {
-   				    cues.push({type: HORIZONTAL_RULE});
-				}
-				cues.push(previousNames);
-				cues.push(previousLine);
-				cues.push({type: LINE_BREAK});
-				cues.push(names);
-				cues.push(chunk);
-			    }
+                case SCENE_START: {
+                    sceneStart = chunk;
+                    previousNames = previousLine = names = undefined;
+                } break;
+                    
+                case LYRICS: {
+                    previousNames = names;
+                    previousLine = chunk;
+                } break;
+                    
+                case NAMES: {
+                    names = chunk;
+                } break;
+                    
+                case PROSE: {
+                    for (const name of names.names) {
+                        const speaker = resolveAlias(name);
+                        const character = characters.get(speaker);
+                        if (!character.cues.has(sceneIndex)) character.cues.set(sceneIndex, []);
+                        const cues = character.cues.get(sceneIndex);
+                        character.scenes.add(sceneIndex);
+                        if (previousLine === undefined) {
+                            cues.push(sceneStart);
+                            cues.push({type: LINE_BREAK});
+                            cues.push(names);
+                            cues.push(chunk);
+                        } else if (previousLine.type === PROSE && previousNames.names.map(resolveAlias).includes(speaker)) {
+                            cues.push({type: LINE_BREAK});
+                            cues.push(chunk);
+                        } else {
+                            character.sort += 1;
+                            if (cues.length > 0) {
+                                cues.push({type: HORIZONTAL_RULE});
+                            }
+                            cues.push(previousNames);
+                            cues.push(previousLine);
+                            cues.push({type: LINE_BREAK});
+                            cues.push(names);
+                            cues.push(chunk);
                         }
-			previousNames = names;
-			previousLine = chunk;
-                    } break;
+                    }
+                    previousNames = names;
+                    previousLine = chunk;
+                } break;
                 }
             }
         }
@@ -188,31 +194,31 @@ function onload(script) {
     sceneSelect.size = scenes.length;
 
     function populateCues() {
-	cuesDiv.innerHTML = "";
-	const character = characters.get(characterSelect.value);
-	if (character.cues.has(parseInt(sceneSelect.value))) {
-	    const cues = character.cues.get(parseInt(sceneSelect.value));
-	    for (let cueIndex = 0; cueIndex < cues.length; ++cueIndex) {
-		const chunk = cues[cueIndex];
-		renderChunk(cuesDiv, chunk);
-	    }
-	}
+        cuesDiv.innerHTML = "";
+        const character = characters.get(characterSelect.value);
+        if (character.cues.has(parseInt(sceneSelect.value))) {
+            const cues = character.cues.get(parseInt(sceneSelect.value));
+            for (let cueIndex = 0; cueIndex < cues.length; ++cueIndex) {
+                const chunk = cues[cueIndex];
+                renderChunk(cuesDiv, chunk);
+            }
+        }
         cuesDiv.scrollTop = 0;
     }
 
     characterSelect.onchange = event => {
-	populateCues();
+        populateCues();
         for (let sceneIndex = 0; sceneIndex < scenes.length; ++sceneIndex) {
-	    sceneSelect.children[sceneIndex].classList.remove("has-line");
-	    if (characters.get(characterSelect.value).scenes.has(sceneIndex)) {
+            sceneSelect.children[sceneIndex].classList.remove("has-line");
+            if (characters.get(characterSelect.value).scenes.has(sceneIndex)) {
                 sceneSelect.children[sceneIndex].classList.add("has-line");
-	    }
+            }
         }
     }
     characterSelect.onchange();
 
     sceneSelect.onchange = event => {
-	populateCues();
+        populateCues();
     }
 
     let sceneIndex, chunkIndex, scene, speakers, proseFeedback;
@@ -230,69 +236,69 @@ function onload(script) {
     };
 
     function toLowerCaseASCII(s) {
-	return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     }
 
     function normalize(s) {
         return toLowerCaseASCII(s)
-	    .replace(/<\/?[ui]>/g, "")
-	    .replace(/[^\w]|_/g, "")
-	    .trim();
+            .replace(/<\/?[ui]>/g, "")
+            .replace(/[^\w]|_/g, "")
+            .trim();
     }
 
     function deliver() {
         const scene = scenes[sceneIndex];
         if (chunkIndex < scene.chunks.length) {
             const line = scene.chunks[chunkIndex].text;
-	    const target = normalize(line);
-	    const actual = normalize(textarea.value);
-	    let element;
-	    if (proseFeedback !== undefined) {
-		element = proseFeedback;
-	    } else {
-		element = document.createElement("p");
+            const target = normalize(line);
+            const actual = normalize(textarea.value);
+            let element;
+            if (proseFeedback !== undefined) {
+                element = proseFeedback;
+            } else {
+                element = document.createElement("p");
                 element.classList.add("prose");
                 scriptDiv.appendChild(element);
-	    }
+            }
             if (actual === target) {
                 element.innerHTML = line;
                 textarea.value = "";
-		proseFeedback = undefined
+                proseFeedback = undefined
                 advance();
             } else {
-		const text = toLowerCaseASCII(textarea.value);
-		const targetMatches = [];
-		let targetIndex = 0;
-		for (let textIndex = 0; textIndex < text.length; ++textIndex) {
-		    const code = text.charCodeAt(textIndex);
-		    if (ASCII_A <= code && code <= ASCII_Z) {
-			targetMatches.push(text.charAt(textIndex) === target.charAt(targetIndex++));
-		    } else {
-		        targetMatches.push(true);
-		    }
-		}
-		let buffer = "";
-		for (let textIndex = 0; textIndex < text.length; ++textIndex) {
-		    const ch = textarea.value.charAt(textIndex)
-		    if (targetMatches[textIndex]) {
-			buffer += ch;
-		    } else {
-			buffer += `<span class="incorrect">${ch}</span>`;
-		    }
-		}
-		if(actual.length < target.length) {
-  		    buffer += '<span class="incorrect">...</span>';
-		}
-		element.innerHTML = buffer;
-		proseFeedback = element;
-	    }
+                const text = toLowerCaseASCII(textarea.value);
+                const targetMatches = [];
+                let targetIndex = 0;
+                for (let textIndex = 0; textIndex < text.length; ++textIndex) {
+                    const code = text.charCodeAt(textIndex);
+                    if (ASCII_A <= code && code <= ASCII_Z) {
+                        targetMatches.push(text.charAt(textIndex) === target.charAt(targetIndex++));
+                    } else {
+                        targetMatches.push(true);
+                    }
+                }
+                let buffer = "";
+                for (let textIndex = 0; textIndex < text.length; ++textIndex) {
+                    const ch = textarea.value.charAt(textIndex)
+                    if (targetMatches[textIndex]) {
+                        buffer += ch;
+                    } else {
+                        buffer += `<span class="incorrect">${ch}</span>`;
+                    }
+                }
+                if(actual.length < target.length) {
+                    buffer += '<span class="incorrect">...</span>';
+                }
+                element.innerHTML = buffer;
+                proseFeedback = element;
+            }
             scriptDiv.scrollTop = scriptDiv.scrollHeight;
         }
     }
 
     function advance() {
         chunkIndex++;
-	displayChunk();
+        displayChunk();
     }
 
     function renderChunk(div, chunk) {
@@ -354,16 +360,16 @@ function onload(script) {
         const scene = scenes[sceneIndex];
         if (chunkIndex < scene.chunks.length) {
             const chunk = scene.chunks[chunkIndex];
-	    if (chunk.type === PROSE && (characterSelect.value === ALL || speakers.includes(characterSelect.value))) {
-		deliverButton.disabled = skipButton.disabled = false;
-	    } else {
-		if (chunk.type === NAMES) {
+            if (chunk.type === PROSE && (characterSelect.value === ALL || speakers.includes(characterSelect.value))) {
+                deliverButton.disabled = skipButton.disabled = false;
+            } else {
+                if (chunk.type === NAMES) {
                     speakers = chunk.names.map(resolveAlias);
-		}
-		renderChunk(scriptDiv, chunk);
-		scriptDiv.scrollTop = scriptDiv.scrollHeight;
-		advance();
-	    }
+                }
+                renderChunk(scriptDiv, chunk);
+                scriptDiv.scrollTop = scriptDiv.scrollHeight;
+                advance();
+            }
         } else {
             deliverButton.disabled = skipButton.disabled = true;
             textarea.readOnly = true;
@@ -371,33 +377,33 @@ function onload(script) {
     }
 
     function goToNextScene() {
-	const idx = sceneIndex + 1;
-	if (idx < scenes.length) {
-	    sceneSelect.value = idx.toString();
-	    action();
-	}
+        const idx = sceneIndex + 1;
+        if (idx < scenes.length) {
+            sceneSelect.value = idx.toString();
+            action();
+        }
     }
 
     function findMyNextScene() {
-	const sceneIndices = [...characters.get(characterSelect.value).scenes].sort((a, b) => a-b);
-	for (idx of sceneIndices) {
-	    if (sceneIndex < idx) {
-		return idx;
-	    }
-	}
-	return -1;
+        const sceneIndices = [...characters.get(characterSelect.value).scenes].sort((a, b) => a-b);
+        for (idx of sceneIndices) {
+            if (sceneIndex < idx) {
+                return idx;
+            }
+        }
+        return -1;
     }
 
     function goToMyNextScene() {
-	const idx = findMyNextScene();
-	if (idx >= 0) {
-	    sceneSelect.value = idx.toString();
-	    action();
-	}
+        const idx = findMyNextScene();
+        if (idx >= 0) {
+            sceneSelect.value = idx.toString();
+            action();
+        }
     }
 
     function initialize(sceneIdx) {
-	if (0 <= sceneIdx && sceneIdx < scenes.length) {
+        if (0 <= sceneIdx && sceneIdx < scenes.length) {
             sceneIndex = sceneIdx;
 
             scriptDiv.innerHTML = "";
@@ -406,15 +412,15 @@ function onload(script) {
             attract.hidden = true;
             textarea.value = "";
             textarea.readOnly = false;
-	    sceneHeading.innerHTML = sceneSelect.children[sceneIndex].innerHTML;
-	    nextSceneButton.disabled = scenes.length <= (sceneIndex + 1);
-	    myNextSceneButton.disabled = findMyNextScene() < 0;
+            sceneHeading.innerHTML = sceneSelect.children[sceneIndex].innerHTML;
+            nextSceneButton.disabled = scenes.length <= (sceneIndex + 1);
+            myNextSceneButton.disabled = findMyNextScene() < 0;
             displayChunk();
-	}
+        }
     }
 
     function action() {
-	initialize(parseInt(sceneSelect.value));
+        initialize(parseInt(sceneSelect.value));
     }
 
     function skip() {
