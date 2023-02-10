@@ -133,12 +133,7 @@ function onload(script) {
                         if (!character.cues.has(sceneIndex)) character.cues.set(sceneIndex, []);
                         const cues = character.cues.get(sceneIndex);
                         character.scenes.add(sceneIndex);
-                        if (previousLine === undefined) {
-                            cues.push(sceneStart);
-                            cues.push({type: LINE_BREAK});
-                            cues.push(names);
-                            cues.push(chunk);
-                        } else if (previousLine.type === PROSE && previousNames.names.map(resolveAlias).includes(speaker)) {
+                        if (previousLine && previousLine.type === PROSE && previousNames.names.map(resolveAlias).includes(speaker)) {
                             cues.push({type: LINE_BREAK});
                             cues.push(chunk);
                         } else {
@@ -146,8 +141,13 @@ function onload(script) {
                             if (cues.length > 0) {
                                 cues.push({type: HORIZONTAL_RULE});
                             }
-                            cues.push(previousNames);
-                            cues.push(previousLine);
+
+                            if (previousLine === undefined) {
+                                cues.push(sceneStart);
+                            } else {
+                                cues.push(previousNames);
+                                cues.push(previousLine);
+                            }
                             cues.push({type: LINE_BREAK});
                             cues.push(names);
                             cues.push(chunk);
