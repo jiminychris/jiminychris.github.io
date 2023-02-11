@@ -171,6 +171,7 @@ function onload(script) {
     sceneHeading = document.getElementById("scene-heading");
     textarea = document.getElementById("textarea");
     deliverButton = document.getElementById("deliver");
+    buttonRestart = document.getElementById("restart");
     buttonQuit = document.getElementById("quit");
     skipButton = document.getElementById("skip");
     nextSceneButton = document.getElementById("next-scene");
@@ -434,6 +435,7 @@ function onload(script) {
 
     actionButton.onclick = action;
     deliverButton.onclick = deliver;
+    buttonRestart.onclick = action;
     buttonQuit.onclick = quit;
     skipButton.onclick = skip;
     nextSceneButton.onclick = goToNextScene;
