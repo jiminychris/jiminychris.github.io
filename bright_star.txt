@@ -304,7 +304,7 @@ Hi, Billy.
 Margo. Sorry, it took me a while to make it in.
 
 =MARGO
-I though it might. How are things with Daddy?
+I thought it might. How are things with Daddy?
 
 =BILLY CANE
 He's doing better. It's strange. We both swear we can hear her call out to us sometimes.
@@ -349,7 +349,7 @@ Now, I caught a few typos and retyped it on heavy bond. In fact, I retyped them 
 
 =BILLY CANE
          \(earnest)
-Thank you. Thank oyu.
+Thank you. Thank you.
          \(then)
 Margo, I've been thinking. What if...what if I submitted some of these stories to the Asheville Southern Journal?
 
@@ -423,7 +423,7 @@ For what it's worth, I'll [miss you]...
 
     |BRIGHT STAR KEEP               |BRIGHT STAR
     |SHINING FOR ME                 |
-    |SHINE ON AND SEE ME            |SHINE ON SHINE ONE
+    |SHINE ON AND SEE ME            |SHINE ON SHINE ON
     |THROUGH                        |
     |BRIGHT STAR KEEP               |OOH...
     |SHINING FOR ME                 |
@@ -1275,7 +1275,7 @@ Don't break the chain, right Daddy?
     |I REMEMBER WHEN I WAS YOUR AGE
     |THAT'S WHEN I WAS SETTLING DOWN
     |YOUR MOTHER AND I WERE ENGAGED
-    |AND I GPENED UP A BANK ACCOUNT.
+    |AND I OPENED UP A BANK ACCOUNT.
 
 =JIMMY RAY
     |YOU CAN'T EXPECT THE FUTURE TO BE JUST LIKE THE PAST
@@ -1290,7 +1290,7 @@ Don't break the chain, right Daddy?
     |THERE'S NO RUSH FOR ME TO STEP INTO YOUR SHOES
 
 =MAYOR
-    |YOU CAN'T WASTE YOU TIME ON FOOLISH THINGS
+    |YOU CAN'T WASTE YOUR TIME ON FOOLISH THINGS
     |WHEN THERE'S REAL WORK TO BE DONE
     |THERE WON'T BE ANY STOPPING YOU AND ME
     |WHEN YOU DO WHAT I TELL YOU SON
@@ -1331,7 +1331,7 @@ $CENE 8
          \office.)
 
 =LUCY
-Daryl and I read your stories,
+Daryl and I read your stories.
 
 =DARYL
 Yes, I thought they were extraordinary.
@@ -1467,7 +1467,7 @@ $CENE 9
          \of his eye, then approaches.)
 
 =MAX
-Margo..
+Margo...
 
 =MARGO
 Oh, hi, Max.
@@ -1495,7 +1495,7 @@ She's got it ready!
          \it up to her.)
 
 =FLORENCE
-Io nipped it in at the waist, you slender thing. Every young
+I nipped it in at the waist, you slender thing. Every young
 woman deserves a new dress!
 
 =MARGO
@@ -1635,10 +1635,10 @@ Oh Margo, I could almost kiss you!
 
 =MARGO
     |IT WON'T BE THE SAME HERE
-    |WITHOUT YOU I'LL BE FIGHTING THARS
+    |WITHOUT YOU I'LL BE FIGHTING TEARS
     |WHEN YOU WERE OVER IN THE WAR
     |I FOUGHT 'EM OFF BEFORE
-    |I'LL JUST STAY ON THE LOOK OUT
+    |I'LL JUST STAY ON THE LOOKOUT
     |AND I'LL LISTEN FOR THE SOUND
     |OF YOUR OL' 34 FORD
 
@@ -1825,7 +1825,7 @@ Oh, that's Daddy. It's almost dark. I've got to get back.
     |LET ME STAY HERE FOREVER
     |I DON'T WANT TO GO HOME
 
-=TOWNSFPOLK
+=TOWNSFOLK
     |WHAT COULD BE BETTER THAN HOLDING YOU CLOSE
     |TO ME LIKE THIS?
     |WHEN THERE IS MUSIC AND DANCING AND STARS UP ABOVE
@@ -1867,7 +1867,7 @@ I know of. You've been running around, Alice Murphy.
 I don't call it running around. Love is not running around.
 
 =DR. NORQUIST
-Dees he love you?
+Does he love you?
 
 =ALICE
 I think he does.
@@ -2936,7 +2936,8 @@ You're still holding that suitcase, Jimmy Ray.
 
 That's better.
          \(then)
-I took care of my son that night. I made everything right for you, so you could go into the world without
+I took care of my son that night. I made everything right
+for you, so you could go into the world without
 encumbrance.
 
 =JIMMY RAY
@@ -2956,7 +2957,9 @@ waters.
 Is this the liquor talking?
 
 =MAYOR
-Nobody knew the mayor on that train; I got on in Ryan County. I was just a businessman passing through. But not with papers ina briefcase...Something better. Something
+Nobody knew the mayor on that train; I got on in Ryan
+County. I was just a businessman passing through. But not
+with papers in a briefcase...Something better. Something
 better to relocate.
 
 =JIMMY RAY
@@ -3060,7 +3063,7 @@ intoxicating beverages?
 
 =LUCY
          \(rising)
-IT say he's lonely. Let's find out.
+I say he's lonely. Let's find out.
 
          \(LUCY goes over to him.)
 
@@ -3124,7 +3127,7 @@ Just like Lucy.
 =LUCY
 It's called a sloe gin fizz, but you don't have to drink it slow.
 
-         \(She downs her giass, and helps BILLY
+         \(She downs her glass, and helps BILLY
          \down his.)
 
 =BILLY CANE
@@ -3458,7 +3461,7 @@ Maybe in one of the photos...
          \file together.)
 
 =CLERK
-The photes are in black and white, Miss Murphy. Maybe he
+The photos are in black and white, Miss Murphy. Maybe he
 wasn't dropped off in Raleigh. You should be trying some of
 the surrounding towns. Charlotte has an agency.
 
@@ -3582,7 +3585,7 @@ behaved differently, better.
 Yes. When I came to Raleigh today, it wasn't my intention
 to see you. I was at the hall of records. With the same
 woman who has been there for twenty years. And I asked if
-anyone else had locked for the whereabouts of our child.
+anyone else had looked for the whereabouts of our child.
 And she said not one. Not one person. Not you.
 
 =JIMMY RAY
@@ -4511,7 +4514,7 @@ that night. But it was not just me; it was every one of us.
 Oh, Billy.
 
 =BILLY CANE
-So I went to the site of my real birth: a smail cabin in
+So I went to the site of my real birth: a small cabin in
 the woods.
 
 =ALICE
