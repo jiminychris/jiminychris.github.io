@@ -72,7 +72,12 @@ function onload(script) {
                 } break;
 
                 case '\\': {
-                    scene.chunks.push({type: WRYLIE, text: line.slice(1).trim()});
+                    const lastChunk = scene.chunks[scene.chunks.length - 1];
+                    if (lastChunk.type === WRYLIE) {
+                        lastChunk.text = [lastChunk.text, line.slice(1).trim()].join(" ");
+                    } else {
+                        scene.chunks.push({type: WRYLIE, text: line.slice(1).trim()});
+                    }
                 } break;
                     
                 case '|': {

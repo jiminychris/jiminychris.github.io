@@ -2368,7 +2368,7 @@ $CENE 15
          \(The cabin is in shambles. The baby has
          \been born, probably five days ago.
          \Towels, pans, are everywhere. ALICE
-         \Jies in bed with the baby by her side.
+         \lies in bed with the baby by her side.
          \DADDY is there. MAMA, too, tending to
          \ALICE and the baby. DADDY MURPHY
          \paces, holding a Bible.)
@@ -2470,7 +2470,7 @@ Didn't he, Stanford?
 He sure did.
 
          \(STANFORD takes out some papers and
-         \Puts them on a table near DADDY
+         \puts them on a table near DADDY
          \MURPHY.)
 
 #12 PLEASE, DON'T TAKE HIM
@@ -2621,7 +2621,7 @@ $CENE 16
 
          \(Sounds of the train rolling. The MAYOR
          \enters carrying the valise. He is
-         \Sweating, anxious. He stands, holding
+         \sweating, anxious. He stands, holding
          \the hand rail. Train sounds increase.)
 
 #13 A MAN'S GOTTA DO (REPRISE)
