@@ -2362,7 +2362,7 @@ Let me put it this way. No one has ever swayed Daryl.
 
 $CENE 15
 
-         \(1924, ZEBULON. A PATHETIC SHACK IN THE
+         \(1924. ZEBULON. A PATHETIC SHACK IN THE
          \WOODS. NIGHT.)
 
          \(The cabin is in shambles. The baby has
@@ -2690,16 +2690,16 @@ $CENE 16
 
 @CT 2
 
-#14 ENTR' ACTE
+#14 ENTR'ACTE
 
 #14A OPENING ACT 2
 
 $CENE 0
 
-         \(1924, TRAIN DEPOT OUTSIDE OF ZEBULON.)
+         \(1924. TRAIN DEPOT OUTSIDE OF ZEBULON.)
 
          \(MAMA and ALICE, with ALICE's luggage.
-         \some people mill around.)
+         \Some people mill around.)
 
 =STATIONMASTER
 Boarding, number 7 for Raleigh, Charlotte, and
@@ -2811,7 +2811,7 @@ That'll be a joyous day for all of us.
 
 =MAMA MURPHY & DADDY CANE      =ENSEMBLE
     |SOMETHING TELLS ME             |THE SUN IS GONNA SHINE AGAIN
-    |IT' LL BE ALL RIGHT            |THE SUN IS GONNA SHINE AGAIN
+    |IT'LL BE ALL RIGHT             |THE SUN IS GONNA SHINE AGAIN
     |SOMETHING TELLS ME             |THE SUN IS GONNA SHINE AGAIN
     |IT'S GONNA BE OKAY             |THE SUN IS GONNA SHINE AGAIN
 
@@ -2842,7 +2842,7 @@ That'll be a joyous day for all of us.
 
 $CENE 1
 
-         \(1924, ZEBULON. MAYOR'S LIVING ROOM.)
+         \(1924. ZEBULON. MAYOR'S LIVING ROOM.)
 
          \(The MAYOR is in the living room. He is
          \not well, and has a slight yellow cast.
@@ -2866,7 +2866,7 @@ Here's your medicine.
          \(He offers him medicine.)
 
 =MAYOR
-There's no doubt about it. I'm turning yellow as a Sunflower. That's poison in my liver, they tell me. That's a swift thing.
+There's no doubt about it. I'm turning yellow as a sunflower. That's poison in my liver, they tell me. That's a swift thing.
 
 =JIMMY RAY
 Maybe not.
@@ -2882,7 +2882,7 @@ Chapel Hill.
 Overnight?
 
 =JIMMY RAY
-Maybe more. Maybe a week or more,
+Maybe more. Maybe a week or more.
 
 =MAYOR
 Who's going to take care of me?
@@ -2931,7 +2931,7 @@ What do you mean?
 =MAYOR
 You're still holding that suitcase, Jimmy Ray.
 
-         \(JIMMY RAY puts down the suitcase,
+         \(JIMMY RAY puts down the suitcase.
          \Checks his watch.)
 
 That's better.
@@ -3674,7 +3674,7 @@ the river below.
 
 $CENE 6
 
-         \(1946, HAYES CREEK. THE BOOKSTORE.)
+         \(1946. HAYES CREEK. THE BOOKSTORE.)
 
          \(MAX enters.)
 
@@ -4014,7 +4014,7 @@ Your Daddy knows we're coming?
 
 =BILLY CANE
 He sure does.
-         \(yelis)
+         \(yells)
 Hey, Daddy! It's Billy, and put your pants on! There's a
 lady present.
 
@@ -4184,7 +4184,7 @@ What are you two talking about, Daddy?
 Billy, one evening I was out frog gigging. I went a little
 farther down river than I usually go...
 
-         \[LIGHTS CHANGE; THE SET CHANGES. ]
+         \[LIGHTS CHANGE; THE SET CHANGES.]
 
          \(1924, THE WOODS. MOONLIT NIGHT. A
          \TRAIN TRESTLE OVERHEAD.)
@@ -4601,7 +4601,7 @@ We're not, but wouldn't that have been great?
     |LOVE LET ME LIFT
     |THIS VEIL OF DARKNESS
     |LOVE LET ME SEE
-    |My WAY BACK TO YOU
+    |MY WAY BACK TO YOU
     |MY WAY
     |BACK TO YOU
 

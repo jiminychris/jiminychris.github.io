@@ -38,74 +38,74 @@ function onload(script) {
                 scene.chunks.push({type: LINE_BREAK});
             } else {
                 switch (line[0]) {
-                case '@': {
-                    scene = {chunks: []};
-                    const chunk = {type: ACT_START, number: line.split(" ")[1]};
-                    act = chunk.number;
-                    scene.chunks.push(chunk);
-                } break;
-                    
-                case '$': {
-                    if (scene.scene !== undefined) {
+                    case '@': {
                         scene = {chunks: []};
-                    }
-                    const chunk = {type: SCENE_START, number: line.split(" ")[1]};
-                    scene.act = act;
-                    scene.scene = chunk.number;
-                    scene.chunks.push(chunk);
-                    sceneIndex = scenes.length;
-                    characters.get(ALL).scenes.add(sceneIndex);
-                    characters.get(NONE).scenes.add(sceneIndex);
-                    scenes.push(scene);
-                } break;
+                        const chunk = {type: ACT_START, number: line.split(" ")[1]};
+                        act = chunk.number;
+                        scene.chunks.push(chunk);
+                    } break;
                     
-                case '!': {
-                    const names = line.slice(1).split("=")
-                    const mainName = names[0];
-                    for (const alias of names) {
-                        aliases.set(alias, mainName);
-                    }
-                } break;
-                    
-                case '#': {
-                    scene.chunks.push({type: SONG_TITLE, text: line});
-                } break;
-
-                case '\\': {
-                    const lastChunk = scene.chunks[scene.chunks.length - 1];
-                    if (lastChunk.type === WRYLIE) {
-                        lastChunk.text = [lastChunk.text, line.slice(1).trim()].join(" ");
-                    } else {
-                        scene.chunks.push({type: WRYLIE, text: line.slice(1).trim()});
-                    }
-                } break;
-                    
-                case '|': {
-                    const chunk = {type: LYRICS, parts: line.slice(1).split("|").map(p => p.trim())};
-                    scene.chunks.push(chunk);
-                } break;
-                    
-                case '=': {
-                    const names = line.slice(1).split('=').map(l => l.trim());
-                    speakers = names.map(resolveAlias);
-                    scene.chunks.push({type: NAMES, names});
-                } break;
-
-                default: {
-                    const lastChunk = scene.chunks[scene.chunks.length - 1];
-                    if (lastChunk.type === PROSE) {
-                        lastChunk.text = [lastChunk.text, line].join(" ");
-                    } else {
-                        scene.chunks.push({type: PROSE, text: line});
-                        for (const speaker of speakers) {
-                            if (!characters.has(speaker)) {
-                                characters.set(speaker, {scenes: new Set(), sort: 0, cues: new Map()});
-                            }
-                            const character = characters.get(speaker);
-                            character.scenes.add(sceneIndex);
+                    case '$': {
+                        if (scene.scene !== undefined) {
+                            scene = {chunks: []};
                         }
-                    }
-                } break;
+                        const chunk = {type: SCENE_START, number: line.split(" ")[1]};
+                        scene.act = act;
+                        scene.scene = chunk.number;
+                        scene.chunks.push(chunk);
+                        sceneIndex = scenes.length;
+                        characters.get(ALL).scenes.add(sceneIndex);
+                        characters.get(NONE).scenes.add(sceneIndex);
+                        scenes.push(scene);
+                    } break;
+                    
+                    case '!': {
+                        const names = line.slice(1).split("=")
+                        const mainName = names[0];
+                        for (const alias of names) {
+                            aliases.set(alias, mainName);
+                        }
+                    } break;
+                    
+                    case '#': {
+                        scene.chunks.push({type: SONG_TITLE, text: line});
+                    } break;
+
+                    case '\\': {
+                        const lastChunk = scene.chunks[scene.chunks.length - 1];
+                        if (lastChunk.type === WRYLIE) {
+                            lastChunk.text = [lastChunk.text, line.slice(1).trim()].join(" ");
+                        } else {
+                            scene.chunks.push({type: WRYLIE, text: line.slice(1).trim()});
+                        }
+                    } break;
+
+                    case '|': {
+                        const chunk = {type: LYRICS, parts: line.slice(1).split("|").map(p => p.trim())};
+                        scene.chunks.push(chunk);
+                    } break;
+
+                    case '=': {
+                        const names = line.slice(1).split('=').map(l => l.trim());
+                        speakers = names.map(resolveAlias);
+                        scene.chunks.push({type: NAMES, names});
+                    } break;
+
+                    default: {
+                        const lastChunk = scene.chunks[scene.chunks.length - 1];
+                        if (lastChunk.type === PROSE) {
+                            lastChunk.text = [lastChunk.text, line].join(" ");
+                        } else {
+                            scene.chunks.push({type: PROSE, text: line});
+                            for (const speaker of speakers) {
+                                if (!characters.has(speaker)) {
+                                    characters.set(speaker, {scenes: new Set(), sort: 0, cues: new Map()});
+                                }
+                                const character = characters.get(speaker);
+                                character.scenes.add(sceneIndex);
+                            }
+                        }
+                    } break;
                 }
             }
         }
@@ -117,50 +117,50 @@ function onload(script) {
             const scene = scenes[sceneIndex];
             for (const chunk of scene.chunks) {
                 switch (chunk.type) {
-                case SCENE_START: {
-                    sceneStart = chunk;
-                    previousNames = previousLine = names = undefined;
-                } break;
+                    case SCENE_START: {
+                        sceneStart = chunk;
+                        previousNames = previousLine = names = undefined;
+                    } break;
                     
-                case LYRICS: {
-                    previousNames = names;
-                    previousLine = chunk;
-                } break;
+                    case LYRICS: {
+                        previousNames = names;
+                        previousLine = chunk;
+                    } break;
                     
-                case NAMES: {
-                    names = chunk;
-                } break;
+                    case NAMES: {
+                        names = chunk;
+                    } break;
                     
-                case PROSE: {
-                    for (const name of names.names) {
-                        const speaker = resolveAlias(name);
-                        const character = characters.get(speaker);
-                        if (!character.cues.has(sceneIndex)) character.cues.set(sceneIndex, []);
-                        const cues = character.cues.get(sceneIndex);
-                        character.scenes.add(sceneIndex);
-                        if (previousLine && previousLine.type === PROSE && previousNames.names.map(resolveAlias).includes(speaker)) {
-                            cues.push({type: LINE_BREAK});
-                            cues.push(chunk);
-                        } else {
-                            character.sort += 1;
-                            if (cues.length > 0) {
-                                cues.push({type: HORIZONTAL_RULE});
-                            }
-
-                            if (previousLine === undefined) {
-                                cues.push(sceneStart);
+                    case PROSE: {
+                        for (const name of names.names) {
+                            const speaker = resolveAlias(name);
+                            const character = characters.get(speaker);
+                            if (!character.cues.has(sceneIndex)) character.cues.set(sceneIndex, []);
+                            const cues = character.cues.get(sceneIndex);
+                            character.scenes.add(sceneIndex);
+                            if (previousLine && previousLine.type === PROSE && previousNames.names.map(resolveAlias).includes(speaker)) {
+                                cues.push({type: LINE_BREAK});
+                                cues.push(chunk);
                             } else {
-                                cues.push(previousNames);
-                                cues.push(previousLine);
+                                character.sort += 1;
+                                if (cues.length > 0) {
+                                    cues.push({type: HORIZONTAL_RULE});
+                                }
+
+                                if (previousLine === undefined) {
+                                    cues.push(sceneStart);
+                                } else {
+                                    cues.push(previousNames);
+                                    cues.push(previousLine);
+                                }
+                                cues.push({type: LINE_BREAK});
+                                cues.push(names);
+                                cues.push(chunk);
                             }
-                            cues.push({type: LINE_BREAK});
-                            cues.push(names);
-                            cues.push(chunk);
                         }
-                    }
-                    previousNames = names;
-                    previousLine = chunk;
-                } break;
+                        previousNames = names;
+                        previousLine = chunk;
+                    } break;
                 }
             }
         }
