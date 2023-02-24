@@ -1148,7 +1148,7 @@ Sorry, Daddy, I was out fixing Aunt Idell's icebox.
 =MAYOR
          \(to STANFORD)
 Can you believe my son? I'm trying to hand over an empire
-to this boy and he's out fixing an icebox,
+to this boy and he's out fixing an icebox.
          \(picks up a document)
 What's that?
 
